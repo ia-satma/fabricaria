@@ -1,14 +1,5 @@
 {
-  "node": {
-    "5bfec4009294fcf1850b59e70d6907cbacd73f61": {
-      "workers": {
-        "app/page": "(action-browser)/./node_modules/.pnpm/next@14.2.3_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fimacdesantiago%2Fproyecto%20fabricaria%2Ffeatures%2Fauth%2Factions.ts%22%2C%5B%22loginAction%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/page": "action-browser"
-      }
-    }
-  },
+  "node": {},
   "edge": {},
-  "encryptionKey": "4Ra5lwcla+QbY3Xffu558NS5msDPTPfzXFnufs2NRq4="
+  "encryptionKey": "vAi+yncQfGJyqlIU94/cqqJxfhn6TiKOUfa4wO0o0aQ="
 }

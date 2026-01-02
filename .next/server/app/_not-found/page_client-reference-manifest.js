@@ -1,0 +1,1 @@
+globalThis.__RSC_MANIFEST=(globalThis.__RSC_MANIFEST||{});globalThis.__RSC_MANIFEST["/_not-found/page"]={"moduleLoading":{"prefix":"/_next/","crossOrigin":null},"ssrModuleMapping":{},"edgeSSRModuleMapping":{},"clientModules":{},"entryCSSFiles":{"/Users/imacdesantiago/proyecto fabricaria/":[],"/Users/imacdesantiago/proyecto fabricaria/app/_not-found/page":[]}}
