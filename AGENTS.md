@@ -29,15 +29,12 @@
 - `components/ui/`: Atomic visual primitives (Buttons, Inputs). UNTOUCHABLE implementation details.
 - `db/`: Schema and Drizzle client.
 
-### 2. Coding Standards
-- **No Barrel Files**: Do not use `index.ts` to re-export modules. Import directly to avoid circular deps and context bloat.
-- **Naming**: `kebab-case` for files/folders. `PascalCase` for Components. `camelCase` for functions.
-- **Safety**: 
-  - NEVER hardcode secrets. Use `process.env`.
-  - ALWAYS validate external data with Zod.
-- **Components**:
-  - Make `className` overridable via `cn()` utility.
-  - Use `forwardRef` for atomic components.
+### 3. Safety & Governance (Protocolo AEGIS)
+- **Multi-Tenant Isolation**: Every database query MUST include a filter for `tenant_id`. 
+- **RLS (Row Level Security)**: All sensitive tables (Memories, Billing) must have RLS enabled at the DB level.
+- **Embeddings**: Only use vector search within the context of a specific `tenant_id` to prevent data leakage.
+- **Validation**: Strict use of Zod for all API route protection.
+- **Audit**: All destructive actions (DB wipes, configuration changes) must be logged in `@metadata`.
 
 ## @Flow (Architecture Handover)
 ### Current State: PHASE 1 (Genesis)
