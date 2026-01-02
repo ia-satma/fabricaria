@@ -1,29 +1,14 @@
 { pkgs }: {
   deps = [
     pkgs.nodejs-20_x
-    pkgs.postgresql
+    pkgs.nodePackages.typescript
+    pkgs.nodePackages.ts-node
+    # Dependencias Críticás para Operación Panopticon (Puppeteer)
     pkgs.chromium
     pkgs.glib
     pkgs.nss
-    pkgs.nspr
-    pkgs.atk
-    pkgs.cups
-    pkgs.dbus
-    pkgs.expat
-    pkgs.libdrm
-    pkgs.libX11
-    pkgs.libXcomposite
-    pkgs.libXdamage
-    pkgs.libXext
-    pkgs.libXfixes
-    pkgs.libXrandr
-    pkgs.libXrender
-    pkgs.libxcb
-    pkgs.libxshmfence
-    pkgs.mesa
-    pkgs.pango
-    pkgs.cairo
-    pkgs.fontconfig
     pkgs.freetype
+    pkgs.harfbuzz
+    pkgs.ca-certificates
   ];
 }

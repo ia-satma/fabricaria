@@ -9,31 +9,32 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@google/generative-ai": "^0.11.4",
+        "@neondatabase/serverless": "^0.9.3",
+        "@radix-ui/react-scroll-area": "^1.1.0",
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.1.1",
+        "crypto-js": "^4.2.0",
+        "drizzle-orm": "^0.30.10",
+        "lucide-react": "^0.378.0",
         "next": "14.2.3",
         "react": "^18",
         "react-dom": "^18",
-        "lucide-react": "^0.378.0",
-        "clsx": "^2.1.1",
         "tailwind-merge": "^2.3.0",
-        "class-variance-authority": "^0.7.0",
-        "drizzle-orm": "^0.30.10",
-        "@neondatabase/serverless": "^0.9.3",
-        "zod": "^3.23.8",
-        "@google/generative-ai": "^0.11.4",
-        "crypto-js": "^4.2.0",
-        "puppeteer": "^22.10.0",
-        "@radix-ui/react-scroll-area": "^1.1.0"
+        "zod": "^3.23.8"
     },
     "devDependencies": {
-        "typescript": "^5",
-        "@types/node": "^20",
+        "@types/crypto-js": "^4.2.2",
+        "@types/node": "^20.19.27",
         "@types/react": "^18",
         "@types/react-dom": "^18",
-        "@types/crypto-js": "^4.2.2",
-        "postcss": "^8",
-        "tailwindcss": "^3.4.1",
+        "drizzle-kit": "^0.21.0",
         "eslint": "^8",
         "eslint-config-next": "14.2.3",
-        "drizzle-kit": "^0.21.0"
+        "postcss": "^8",
+        "puppeteer": "^22.15.0",
+        "tailwindcss": "^3.4.1",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.9.3"
     }
 }
