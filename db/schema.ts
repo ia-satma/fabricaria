@@ -37,5 +37,6 @@ export const agentMemories = pgTable("agent_memories", {
     // Since we don't have the custom vector type helper imported, we will assume it is handled via raw SQL 
     // in the actions. But let's add metadata.
     metadata: jsonb("metadata").default({}),
+    embedding: vector("embedding", { dimensions: 768 }),
     createdAt: timestamp("created_at").defaultNow(),
 });
