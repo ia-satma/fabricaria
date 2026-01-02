@@ -2,5 +2,28 @@
   deps = [
     pkgs.nodejs-20_x
     pkgs.postgresql
+    pkgs.chromium
+    pkgs.glib
+    pkgs.nss
+    pkgs.nspr
+    pkgs.atk
+    pkgs.cups
+    pkgs.dbus
+    pkgs.expat
+    pkgs.libdrm
+    pkgs.libX11
+    pkgs.libXcomposite
+    pkgs.libXdamage
+    pkgs.libXext
+    pkgs.libXfixes
+    pkgs.libXrandr
+    pkgs.libXrender
+    pkgs.libxcb
+    pkgs.libxshmfence
+    pkgs.mesa
+    pkgs.pango
+    pkgs.cairo
+    pkgs.fontconfig
+    pkgs.freetype
   ];
 }

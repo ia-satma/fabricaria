@@ -15,6 +15,7 @@ import {
     Loader2,
     ShieldCheck
 } from "lucide-react";
+import { processChatHybrid, saveThoughtSignatureAction } from "@/features/chat/actions";
 import { recallMemories, saveMemory } from "@/features/memory/actions";
 import { cn } from "@/lib/utils";
 
