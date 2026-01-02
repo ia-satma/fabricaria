@@ -3,10 +3,12 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev",
+        "dev": "next dev -H 0.0.0.0 -p 5000",
         "build": "next build",
-        "start": "next start",
-        "lint": "next lint"
+        "start": "next start -H 0.0.0.0 -p 5000",
+        "lint": "next lint",
+        "db:push": "drizzle-kit push:pg",
+        "db:migrate": "psql $DATABASE_URL -f db/migrations/0001_fortress_schema.sql"
     },
     "dependencies": {
         "@google/generative-ai": "^0.11.4",
