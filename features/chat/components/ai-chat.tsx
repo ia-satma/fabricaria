@@ -54,23 +54,17 @@ export function AIChat({ tenantId }: { tenantId: string }) {
         setIsLoading(true);
 
         try {
-            // 1. RAG STEP: Recall context from memory
-            const relatedMemories = await recallMemories(input, tenantId);
+            // Hybrid Brain Routing
+            const response = await processChatHybrid(input, tenantId);
 
-            // 2. SIMULATE AI ACTION (In production, this calls LLM with memories)
-            setTimeout(() => {
-                const assistantMessage: Message = {
-                    id: (Date.now() + 1).toString(),
-                    role: "assistant",
-                    content: relatedMemories.length > 0
-                        ? `He recuperado ${relatedMemories.length} fragmentos de tu memoria para procesar esto. Basado en lo que sé: "${relatedMemories[0].content}"... ¿te gustaría profundizar?`
-                        : "No encontré recuerdos específicos sobre esto en el hipocampo. ¿Es algo nuevo que debería aprender?",
-                    memories: relatedMemories,
-                };
-                setMessages((prev) => [...prev, assistantMessage]);
-                setIsLoading(false);
-            }, 1000);
-
+            const assistantMessage: Message = {
+                id: (Date.now() + 1).toString(),
+                role: "assistant",
+                content: response.content,
+                memories: response.memories,
+            };
+            setMessages((prev) => [...prev, assistantMessage]);
+            setIsLoading(false);
         } catch (error) {
             console.error("Chat Error:", error);
             setIsLoading(false);
