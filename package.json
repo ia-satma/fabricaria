@@ -15,7 +15,7 @@
     "dependencies": {
         "@google/generative-ai": "^0.11.4",
         "@modelcontextprotocol/sdk": "^1.25.1",
-        "@neondatabase/serverless": "^0.9.3",
+        "@neondatabase/serverless": "^1.0.2",
         "@radix-ui/react-scroll-area": "^1.1.0",
         "@replit/crosis": "^13.5.1",
         "@stripe/stripe-js": "^8.6.0",
