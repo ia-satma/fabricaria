@@ -53,4 +53,12 @@
 3. **Verify**: Ensure generic components in `components/ui` remain unpolluted by business logic.
 
 ---
+---
+
+## @Mnemosyne (Memory & Caching Strategy)
+**Directives for Gemini 1.5 Pro/Flash**:
+1.  **Context Caching**: This file (`AGENTS.md`) and `db/schema.ts` MUST be cached to reduce latency and token costs.
+2.  **Vector Hydration**: The database is equipped with `pgvector`. Future agents must store code embeddings and project context in a `memory_embeddings` table to allow semantic search (RAG).
+3.  **Handoff Protocol**: Before terminating, agents should summarize their session and persist high-value insights into the Vector DB (or `AGENTS.md` if critical).
+
 **END OF GENOME**
