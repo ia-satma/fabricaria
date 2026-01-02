@@ -60,10 +60,31 @@ export class GeminiCacheManager {
     }
 
     /**
+   * TSIP: Captures and manages Thought Signatures
+   */
+    private static thoughtSignatures = new Map<string, string>();
+
+    static saveThoughtSignature(sessionId: string, signature: string) {
+        console.log(`🧠 [TSIP] Persistence active for session: ${sessionId}`);
+        this.thoughtSignatures.set(sessionId, signature);
+    }
+
+    static getThoughtSignature(sessionId: string): string | null {
+        return this.thoughtSignatures.get(sessionId) || null;
+    }
+
+    static sanitizeSignature(sessionId: string, nextModel: string, currentModel: string) {
+        if (nextModel !== currentModel) {
+            console.warn(`🛡️ [TSIP] Model mismatch (${currentModel} -> ${nextModel}). Purging thought signature.`);
+            this.thoughtSignatures.delete(sessionId);
+        }
+    }
+
+    /**
      * Decision logic: RAG vs CACHE
      */
     static decideRouting(query: string): "RAG" | "CACHE" {
-        const specificKeywords = ["mi", "mis", "factura", "último", "recuerdo", "ayer", "dije"];
+        const specificKeywords = ["mi", "mis", "factura", "último", "recuerdo", "ayer", "dije", "qué hice"];
         const lowercaseQuery = query.toLowerCase();
 
         const isSpecific = specificKeywords.some(keyword => lowercaseQuery.includes(keyword));

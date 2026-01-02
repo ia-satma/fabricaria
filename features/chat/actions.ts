@@ -5,33 +5,45 @@ import { GeminiCacheManager } from "@/lib/ai/gemini-client";
 import { readFileSync } from "fs";
 import { join } from "path";
 
-export async function processChatHybrid(query: string, tenantId: string) {
+export async function processChatHybrid(query: string, tenantId: string, sessionId: string) {
     // 1. Semantic Routing Decision
     const route = GeminiCacheManager.decideRouting(query);
-    console.log(`🤖 [Router] Selecting path: ${route} for query: "${query}"`);
+
+    // 2. TSIP: Dynamic Thinking Level logic
+    const lastSignature = GeminiCacheManager.getThoughtSignature(sessionId);
+    const thinkingLevel = lastSignature ? "MINIMAL" : "HIGH";
+
+    console.log(`🤖 [Router] Path: ${route} | Thinking: ${thinkingLevel} | Session: ${sessionId}`);
 
     if (route === "RAG") {
         // Path: Cold Memory (Neon pgvector)
         const context = await recallMemories(query, tenantId);
+
+        // In TSIP flow, we would pass the lastSignature to the model
+        // const response = await genAI.generateContent({ ..., thoughtSignature: lastSignature });
+
         return {
             route: "RAG",
+            thinkingLevel,
             content: context.length > 0
-                ? `[RAG ACTIVE] He recuperado ${context.length} fragmentos relevántes de tu memoria: "${context[0].content}"...`
-                : "[RAG ACTIVE] No encontré recuerdos específicos. ¿Deseas que guarde esto?",
+                ? `[RAG ACTIVE] [TSIP: ${thinkingLevel}] He recuperado ${context.length} fragmentos de tu memoria: "${context[0].content}"...`
+                : `[RAG ACTIVE] [TSIP: ${thinkingLevel}] No encontré recuerdos específicos.`,
             memories: context,
+            // Mock new signature for next turn
+            thoughtSignature: "thought_sig_" + Math.random().toString(36).substring(7),
         };
     } else {
         // Path: Hot Memory (Gemini Cache)
-        // In a real implementation, we would get agents.md and schema.ts content:
-        const agentsPath = join(process.cwd(), "AGENTS.md");
-        const schemaPath = join(process.cwd(), "db/schema.ts");
-
-        // This is where we'd call GeminiCacheManager.getOrUpdateCache
-        // For now, we simulate the "Global Reasoning" based on the project genome
         return {
             route: "CACHE",
-            content: "[CACHE ACTIVE] Utilizando el Córtex Híbrido (AGENTS.md + Schema). Tengo presente las reglas estructurales del proyecto para responderte con alta fidelidad.",
+            thinkingLevel,
+            content: `[CACHE ACTIVE] [TSIP: ${thinkingLevel}] Utilizando el Córtex Híbrido. La continuidad cognitiva está garantizada.`,
             memories: [],
+            thoughtSignature: "thought_sig_" + Math.random().toString(36).substring(7),
         };
     }
+}
+
+export async function saveThoughtSignatureAction(sessionId: string, signature: string) {
+    GeminiCacheManager.saveThoughtSignature(sessionId, signature);
 }

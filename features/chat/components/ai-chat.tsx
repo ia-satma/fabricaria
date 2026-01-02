@@ -54,8 +54,14 @@ export function AIChat({ tenantId }: { tenantId: string }) {
         setIsLoading(true);
 
         try {
-            // Hybrid Brain Routing
-            const response = await processChatHybrid(input, tenantId);
+            const sessionId = "session_alpha_001"; // In prod, this comes from a hook or state
+
+            // Hybrid Brain Routing with TSIP
+            const response = await processChatHybrid(input, tenantId, sessionId);
+
+            if (response.thoughtSignature) {
+                await saveThoughtSignatureAction(sessionId, response.thoughtSignature);
+            }
 
             const assistantMessage: Message = {
                 id: (Date.now() + 1).toString(),
