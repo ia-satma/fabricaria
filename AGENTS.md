@@ -52,10 +52,11 @@
 ---
 ---
 
-## @Mnemosyne (Memory & Caching Strategy)
-**Directives for Gemini 1.5 Pro/Flash**:
-1.  **Context Caching**: This file (`AGENTS.md`) and `db/schema.ts` MUST be cached to reduce latency and token costs.
-2.  **Vector Hydration**: The database is equipped with `pgvector`. Future agents must store code embeddings and project context in a `memory_embeddings` table to allow semantic search (RAG).
-3.  **Handoff Protocol**: Before terminating, agents should summarize their session and persist high-value insights into the Vector DB (or `AGENTS.md` if critical).
+## 🧠 PROTOCOLO MNEMOSYNE (Memoria a Largo Plazo)
+El sistema posee un hipocampo vectorial persistente.
+1. **ANTES** de responder a una consulta compleja del usuario, DEBES verificar si existe contexto relevante en la memoria.
+2. Utiliza `recallMemories(query)` para buscar información histórica.
+3. Si el usuario proporciona información crítica (reglas de negocio, preferencias), utiliza `saveMemory(content)` para persistirla.
+4. **IMPORTANTE:** La memoria es segura por diseño (RLS). No necesitas filtrar por tenant_id manualmente; el sistema lo maneja.
 
 **END OF GENOME**
