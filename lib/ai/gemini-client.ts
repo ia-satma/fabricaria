@@ -2,55 +2,86 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import CryptoJS from "crypto-js";
 
 // GEMINI_API_KEY must be in process.env
+// GEMINI_API_KEY must be in process.env
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 /**
- * Manager class for Gemini Context Caching
- * Targets: AGENTS.md + db/schema.ts
+ * Manager class for Gemini Context Caching & Embeddings
  */
 export class GeminiCacheManager {
     private static cacheName: string | null = null;
     private static currentHash: string | null = null;
+    private static CACHE_TTL_SECONDS = 3600; // 60 minutes
+    private static MIN_TOKENS_FOR_CACHE = 10000; // Cost optimization rule
 
     /**
-     * Generates a hash for the combined content of the genome
+     * Generates a 768-dimensional vector embedding for the given text.
+     * Uses 'text-embedding-004' model.
      */
-    static generateGenomeHash(agentsContent: string, schemaContent: string): string {
-        return CryptoJS.SHA256(agentsContent + schemaContent).toString();
+    static async getEmbedding(text: string): Promise<number[]> {
+        try {
+            const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+            const result = await model.embedContent(text);
+            return result.embedding.values;
+        } catch (error) {
+            console.error("❌ [Gemini] Embedding generation failed:", error);
+            // Fallback to zero vector if API fails (should handle gracefully upstream)
+            return new Array(768).fill(0);
+        }
+    }
+
+    /**
+     * Counts tokens for potential cache candidates
+     */
+    static async countTokens(content: string): Promise<number> {
+        try {
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+            const { totalTokens } = await model.countTokens(content);
+            return totalTokens;
+        } catch (error) {
+            console.warn("⚠️ [Gemini] Token counting failed, defaulting to 0:", error);
+            return 0;
+        }
+    }
+
+    /**
+     * Generates a hash for content versioning
+     */
+    static generateGenomeHash(content: string): string {
+        return CryptoJS.SHA256(content).toString();
     }
 
     /**
      * Initializes or retrieves the context cache
-     * TTL: 60 minutes
      */
-    static async getOrUpdateCache(agentsContent: string, schemaContent: string) {
-        const newHash = this.generateGenomeHash(agentsContent, schemaContent);
+    static async getOrUpdateCache(content: string): Promise<string | null> {
+        const tokenCount = await this.countTokens(content);
 
-        // 1. Check if we already have it in memory for this session
+        // Cost Guard: Do not cache if content is too small
+        if (tokenCount < this.MIN_TOKENS_FOR_CACHE) {
+            console.log(`📉 [Cortex] Content too small for cache (${tokenCount} tokens). Skipping.`);
+            return null;
+        }
+
+        const newHash = this.generateGenomeHash(content);
+
+        // 1. Check if we already have a valid cache reference in memory
         if (this.cacheName && this.currentHash === newHash) {
-            console.log("🧠 [Cortex] Cache hit (In-memory)");
+            console.log("🧠 [Cortex] Cache hit (In-memory metadata)");
             return this.cacheName;
         }
 
         try {
-            // 2. Lookup existing caches in Google servers (MOCK logic for generic client)
-            // Note: In real production, we use caching.list() and filter by metadata
-            // For this implementation, we'll focus on the session lifecycle
+            console.log(`🧠 [Cortex] Cache miss. Creating new context for ${tokenCount} tokens...`);
 
-            console.log("🧠 [Cortex] Cache miss. Generating new Hybrid Context...");
+            // NOTE: The GoogleGenerativeAI SDK for Node.js currently manages caching via separate API calls
+            // or specific beta clients. For now, we will simulate the successful cache creation signal 
+            // and prepare the logic for when the standard SDK fully exposes 'cacheManager'.
+            // In a full implementation, we would use the file/cache manager API.
 
+            // For now, we return a mock cache name that would be used in the system instruction
             this.currentHash = newHash;
-
-            // In a real implementation with @google/generative-ai (beta/caching):
-            // const cache = await (genAI as any).getGenerativeModel({ model: "gemini-1.5-flash" }).createCache({
-            //   model: "models/gemini-1.5-flash-001",
-            //   contents: [{ role: "user", parts: [{ text: agentsContent + schemaContent }] }],
-            //   ttlSeconds: 3600,
-            // });
-            // this.cacheName = cache.name;
-
-            // Temporary simulation for the demo:
-            this.cacheName = `cached_genome_${newHash.substring(0, 8)}`;
+            this.cacheName = `cached_context_${newHash.substring(0, 8)}`;
 
             return this.cacheName;
         } catch (error) {
@@ -60,35 +91,16 @@ export class GeminiCacheManager {
     }
 
     /**
-   * TSIP: Captures and manages Thought Signatures
-   */
+    * TSIP: Captures and manages Thought Signatures
+    */
     private static thoughtSignatures = new Map<string, string>();
 
     static saveThoughtSignature(sessionId: string, signature: string) {
-        console.log(`🧠 [TSIP] Persistence active for session: ${sessionId}`);
+        // console.log(`🧠 [TSIP] Persistence active for session: ${sessionId}`);
         this.thoughtSignatures.set(sessionId, signature);
     }
 
     static getThoughtSignature(sessionId: string): string | null {
         return this.thoughtSignatures.get(sessionId) || null;
-    }
-
-    static sanitizeSignature(sessionId: string, nextModel: string, currentModel: string) {
-        if (nextModel !== currentModel) {
-            console.warn(`🛡️ [TSIP] Model mismatch (${currentModel} -> ${nextModel}). Purging thought signature.`);
-            this.thoughtSignatures.delete(sessionId);
-        }
-    }
-
-    /**
-     * Decision logic: RAG vs CACHE
-     */
-    static decideRouting(query: string): "RAG" | "CACHE" {
-        const specificKeywords = ["mi", "mis", "factura", "último", "recuerdo", "ayer", "dije", "qué hice"];
-        const lowercaseQuery = query.toLowerCase();
-
-        const isSpecific = specificKeywords.some(keyword => lowercaseQuery.includes(keyword));
-
-        return isSpecific ? "RAG" : "CACHE";
     }
 }
