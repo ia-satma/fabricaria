@@ -33,6 +33,25 @@ const config: Config = {
                 md: "calc(var(--radius) - 2px)",
                 sm: "calc(var(--radius) - 4px)",
             },
+            keyframes: {
+                "gradient-x": {
+                    "0%, 100%": { "background-position": "0% 50%" },
+                    "50%": { "background-position": "100% 50%" },
+                },
+                "fade-in": {
+                    from: { opacity: "0", transform: "translateY(10px)" },
+                    to: { opacity: "1", transform: "translateY(0)" },
+                },
+                "float": {
+                    "0%, 100%": { transform: "translateY(0)" },
+                    "50%": { transform: "translateY(-10px)" },
+                }
+            },
+            animation: {
+                "gradient-x": "gradient-x 15s ease infinite",
+                "fade-in": "fade-in 0.8s ease-out forwards",
+                "float": "float 6s ease-in-out infinite",
+            },
         },
     },
     plugins: [],

@@ -1,0 +1,64 @@
+  ▲ Next.js 14.2.3
+  - Local:        http://localhost:3000
+  - Environments: .env
+
+ ✓ Starting...
+/bin/sh: pnpm: command not found
+ ✓ Ready in 1471ms
+ ⨯ ./components/ui/card.tsx
+Module parse failed: Export 'CardContent' is not defined (74:55)
+| _c9 = CardFooter;
+| CardFooter.displayName = "CardFooter";
+> export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter };
+| var _c, _c1, _c2, _c3, _c4, _c5, _c6, _c7, _c8, _c9;
+| $RefreshReg$(_c, "Card$React.forwardRef");
+
+Import trace for requested module:
+./components/ui/card.tsx
+./app/page.tsx
+ ○ Compiling / ...
+ ⨯ ./components/ui/card.tsx
+Module parse failed: Export 'CardContent' is not defined (74:55)
+| _c9 = CardFooter;
+| CardFooter.displayName = "CardFooter";
+> export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter };
+| var _c, _c1, _c2, _c3, _c4, _c5, _c6, _c7, _c8, _c9;
+| $RefreshReg$(_c, "Card$React.forwardRef");
+
+Import trace for requested module:
+./components/ui/card.tsx
+./app/page.tsx
+ ⨯ ./components/ui/card.tsx
+Module parse failed: Export 'CardContent' is not defined (74:55)
+| _c9 = CardFooter;
+| CardFooter.displayName = "CardFooter";
+> export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter };
+| var _c, _c1, _c2, _c3, _c4, _c5, _c6, _c7, _c8, _c9;
+| $RefreshReg$(_c, "Card$React.forwardRef");
+
+Import trace for requested module:
+./components/ui/card.tsx
+./app/page.tsx
+ HEAD / 500 in 1189ms
+ ✓ Compiled /_error in 204ms (882 modules)
+ HEAD / 200 in 105ms
+ GET / 200 in 17ms
+(node:19525) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ✓ Compiled in 577ms (896 modules)
+ ✓ Compiled in 41ms (431 modules)
+ ✓ Compiled in 143ms (881 modules)
+ ✓ Compiled in 79ms (881 modules)
+ ✓ Compiled in 58ms (881 modules)
+ GET / 200 in 67ms
+ ✓ Compiled in 110ms (881 modules)
+ GET / 200 in 42ms
+ ✓ Compiled in 75ms (881 modules)
+ GET / 200 in 23ms
+ ✓ Compiled in 76ms (881 modules)
+ GET / 200 in 19ms
+ ✓ Compiled in 121ms (500 modules)
+ ✓ Compiled in 196ms (500 modules)
+ ✓ Compiled in 77ms (500 modules)
+ ✓ Compiled in 40ms (452 modules)
+ ✓ Compiled in 84ms (457 modules)
