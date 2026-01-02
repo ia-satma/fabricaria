@@ -4,8 +4,8 @@ if (!process.env.STRIPE_SECRET_KEY) {
     console.warn("⚠️ [Finance] STRIPE_SECRET_KEY is missing. Billing features will not work.");
 }
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'mock_key_for_build', {
-    apiVersion: '2024-04-10', // Use latest or matching version
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2025-12-15.clover" as any, // 👈 ACTUALIZAR ESTA LÍNEA EXACTAMENTE ASÍ
     typescript: true,
 });
 
