@@ -8,8 +8,19 @@ export async function injectAgentConfiguration(replId: string, token: string, ru
     const client = new Client();
 
     try {
-        // Conexión al contenedor
-        await client.connect({ token, replId });
+        // CORRECCIÓN: Usamos 'open' (público) en lugar de 'connect' (privado)
+        // La librería requiere una función fetchConnectionMetadata para reconexiones
+        await client.open({
+            context: {
+                token,
+                replId
+            },
+            fetchConnectionMetadata: async () => ({
+                token, // En un caso real, aquí se renovaría el token si expirara
+            })
+        });
+
+        console.log("✅ Conexión Crosis establecida.");
 
         // Apertura del canal de archivos (Servicio 'files')
         const filesChannel = client.openChannel({ service: 'files' });
