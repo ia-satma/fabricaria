@@ -1,0 +1,30 @@
+0000000000000000000000000000000000000000 c702356c094f1a9ccc25a638b88c3d8a4080cbc5 iadurezza <50004662-iadurezza@users.noreply.replit.com> 1767385517 +0000	branch: Created from origin/main
+c702356c094f1a9ccc25a638b88c3d8a4080cbc5 47c607ff717f2694d568eea3a827e71b946abe93 ia-satma <ia@satma.mx> 1767385560 +0000	commit: Pre-Recovery checkpoint
+47c607ff717f2694d568eea3a827e71b946abe93 652de0af0cbfb4709d5b0ee6e8f3674a172b2391 ia-satma <ia@satma.mx> 1767385561 +0000	commit: Post-Recovery checkpoint
+652de0af0cbfb4709d5b0ee6e8f3674a172b2391 eeb0593e385e2126f990091f87e76e5b5717cc47 iadurezza <50004662-iadurezza@users.noreply.replit.com> 1767385805 +0000	commit: Saved progress at the end of the loop
+eeb0593e385e2126f990091f87e76e5b5717cc47 412cb2252291346a130636dd1df08df119a4c76d ia-satma <ia@satma.mx> 1767387516 +0000	commit: git pull origin main
+412cb2252291346a130636dd1df08df119a4c76d d44991ca6ed36de9596f52f09a6f139a7a8496e6 ia-satma <ia@satma.mx> 1767389432 +0000	pull --quiet --no-edit --no-rebase --ff-only origin main: Fast-forward
+d44991ca6ed36de9596f52f09a6f139a7a8496e6 4c325066011e59f0b81b19d9c15791bb9b20c2a6 iadurezza <50004662-iadurezza@users.noreply.replit.com> 1767390524 +0000	commit: Add navigation types to Next.js environment declarations
+4c325066011e59f0b81b19d9c15791bb9b20c2a6 7231ab23cf9f3e9946e03c2d8079c04873d31e47 ia-satma <ia@satma.mx> 1767391142 +0000	pull --quiet --no-edit --no-rebase --ff-only origin main: Fast-forward
+7231ab23cf9f3e9946e03c2d8079c04873d31e47 82575bcf2cef01b4de139c52b10eae3c0683260f ia-satma <ia@satma.mx> 1767392165 +0000	pull origin main: Fast-forward
+82575bcf2cef01b4de139c52b10eae3c0683260f dcbd9474836cdd212ef895a9fac62caa0ea599a8 ia-satma <ia@satma.mx> 1767392521 +0000	pull origin main: Fast-forward
+dcbd9474836cdd212ef895a9fac62caa0ea599a8 42ec08b161cf974824e914bcebfeb0efeb856a04 ia-satma <ia@satma.mx> 1767392938 +0000	pull origin main: Fast-forward
+42ec08b161cf974824e914bcebfeb0efeb856a04 00a3b4fcf035c959b3f5cee42e18346432925437 ia-satma <ia@satma.mx> 1767393258 +0000	commit: PULL AND COMMIT
+00a3b4fcf035c959b3f5cee42e18346432925437 3a9489fbd8c5fe90ca713555fff3c32ade702cba ia-satma <ia@satma.mx> 1767393266 +0000	pull --quiet --no-edit --rebase origin main (finish): refs/heads/main onto cb84ffa4852220222545be623c6b7f357afd8ed2
+3a9489fbd8c5fe90ca713555fff3c32ade702cba c52a48c22ae89647369b54fa48e2cb30fdf41080 ia-satma <ia@satma.mx> 1767393725 +0000	pull --quiet --no-edit --no-rebase --ff-only origin main: Fast-forward
+c52a48c22ae89647369b54fa48e2cb30fdf41080 8807c2fd4a829239cd4487d8406571f0230c07ca ia-satma <ia@satma.mx> 1767394171 +0000	pull --quiet --no-edit --no-rebase --ff-only origin main: Fast-forward
+8807c2fd4a829239cd4487d8406571f0230c07ca 568cc1d6c5c0b51e8770dcfc8206216291cf405b ia-satma <ia@satma.mx> 1767397318 +0000	pull origin main: Fast-forward
+568cc1d6c5c0b51e8770dcfc8206216291cf405b 2457792b33decfdb8b23d9828adc8b8474c15735 ia-satma <ia@satma.mx> 1767398287 +0000	commit: commit all
+2457792b33decfdb8b23d9828adc8b8474c15735 ac9a937d21ae810c3db56fdf54e486e576d15aa9 ia-satma <ia@satma.mx> 1767398292 +0000	pull --quiet --no-edit --rebase origin main (finish): refs/heads/main onto d623062349e3515ad926fab0682cae73450b6842
+ac9a937d21ae810c3db56fdf54e486e576d15aa9 42af477a387f74036a75dbb8d579a394b753b260 ia-satma <ia@satma.mx> 1767398670 +0000	pull --quiet --no-edit --no-rebase --ff-only origin main: Fast-forward
+42af477a387f74036a75dbb8d579a394b753b260 a17d4f28a914200bf8aa1de585294c4af5f0c4a6 ia-satma <ia@satma.mx> 1767398959 +0000	pull origin main: Fast-forward
+a17d4f28a914200bf8aa1de585294c4af5f0c4a6 0057b0b90a9a7f1d04eb647e2c271293dfc6f2a2 ia-satma <ia@satma.mx> 1767399308 +0000	pull origin main: Fast-forward
+0057b0b90a9a7f1d04eb647e2c271293dfc6f2a2 8dc669eaa3ecd7debcb16f053579e204e9e6cbec ia-satma <ia@satma.mx> 1767399508 +0000	pull origin main: Fast-forward
+8dc669eaa3ecd7debcb16f053579e204e9e6cbec df69699f83bbf6e10cf60f0e7a822b5add9f566c ia-satma <ia@satma.mx> 1767399785 +0000	pull origin main: Fast-forward
+df69699f83bbf6e10cf60f0e7a822b5add9f566c 8bbcbf062b65e8995f7cb2035aa14d32120d92d2 iadurezza <50004662-iadurezza@users.noreply.replit.com> 1767400264 +0000	commit: Update connection metadata and file channel handling in Crosis
+8bbcbf062b65e8995f7cb2035aa14d32120d92d2 3d802c321b6312f19038e73c56961d1a223086cd iadurezza <50004662-iadurezza@users.noreply.replit.com> 1767401015 +0000	commit: Add necessary exports for project DNA injection and handoff context
+3d802c321b6312f19038e73c56961d1a223086cd e5a8f195b58c64630ac6e376ceda71afb06106bc ia-satma <ia@satma.mx> 1767401095 +0000	commit (merge): Merge origin/main
+e5a8f195b58c64630ac6e376ceda71afb06106bc c4a8fe8e4d2474a8d76cbe21f1f5410cc69361cc iadurezza <50004662-iadurezza@users.noreply.replit.com> 1767401761 +0000	commit: Fix broken frontend by resolving merge conflicts and restarting the project
+c4a8fe8e4d2474a8d76cbe21f1f5410cc69361cc 7de1b496953459ec826630fc402595c8365d0b41 ia-satma <ia@satma.mx> 1767412647 +0000	commit (merge): Merge branch 'main' of https://github.com/ia-satma/fabricaria
+7de1b496953459ec826630fc402595c8365d0b41 9c259d69688076c40d58dbf316b6900a8d2edc0f iadurezza <50004662-iadurezza@users.noreply.replit.com> 1767413130 +0000	commit: Fix synchronization errors preventing code updates
+9c259d69688076c40d58dbf316b6900a8d2edc0f 5c43c3283c11f89589946685486d6b05e037b614 iadurezza <50004662-iadurezza@users.noreply.replit.com> 1767413329 +0000	commit: Restore local work by resetting Git and reapplying changes

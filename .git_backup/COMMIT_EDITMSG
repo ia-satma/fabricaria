@@ -1,0 +1,10 @@
+Restore local work by resetting Git and reapplying changes
+
+Save local changes to a patch file, reset the Git repository to the remote main branch, and then reapply the saved changes before pushing.
+
+Replit-Commit-Author: Agent
+Replit-Commit-Session-Id: ad319d9f-de20-46c9-ae09-a79abe01e14f
+Replit-Commit-Checkpoint-Type: full_checkpoint
+Replit-Commit-Event-Id: 35b9a2fb-c8fd-4ce6-a01c-75b986384419
+Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/86dcf1ab-10d5-401e-a233-792526c6eee7/ad319d9f-de20-46c9-ae09-a79abe01e14f/xoB4pBB
+Replit-Helium-Checkpoint-Created: true

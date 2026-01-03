@@ -1,0 +1,25 @@
+0000000000000000000000000000000000000000 c702356c094f1a9ccc25a638b88c3d8a4080cbc5 iadurezza <50004662-iadurezza@users.noreply.replit.com> 1767385516 +0000	fetch --quiet --depth=1 origin --no-tags main: storing head
+c702356c094f1a9ccc25a638b88c3d8a4080cbc5 eeb0593e385e2126f990091f87e76e5b5717cc47 ia-satma <ia@satma.mx> 1767386139 +0000	update by push
+eeb0593e385e2126f990091f87e76e5b5717cc47 412cb2252291346a130636dd1df08df119a4c76d ia-satma <ia@satma.mx> 1767387527 +0000	update by push
+412cb2252291346a130636dd1df08df119a4c76d d44991ca6ed36de9596f52f09a6f139a7a8496e6 ia-satma <ia@satma.mx> 1767389432 +0000	pull --quiet --no-edit --no-rebase --ff-only origin main: fast-forward
+d44991ca6ed36de9596f52f09a6f139a7a8496e6 4c325066011e59f0b81b19d9c15791bb9b20c2a6 ia-satma <ia@satma.mx> 1767390808 +0000	update by push
+4c325066011e59f0b81b19d9c15791bb9b20c2a6 7231ab23cf9f3e9946e03c2d8079c04873d31e47 ia-satma <ia@satma.mx> 1767391133 +0000	fetch --quiet --all: fast-forward
+7231ab23cf9f3e9946e03c2d8079c04873d31e47 82575bcf2cef01b4de139c52b10eae3c0683260f ia-satma <ia@satma.mx> 1767392165 +0000	pull origin main: fast-forward
+82575bcf2cef01b4de139c52b10eae3c0683260f dcbd9474836cdd212ef895a9fac62caa0ea599a8 ia-satma <ia@satma.mx> 1767392521 +0000	pull origin main: fast-forward
+dcbd9474836cdd212ef895a9fac62caa0ea599a8 42ec08b161cf974824e914bcebfeb0efeb856a04 ia-satma <ia@satma.mx> 1767392938 +0000	pull origin main: fast-forward
+42ec08b161cf974824e914bcebfeb0efeb856a04 cb84ffa4852220222545be623c6b7f357afd8ed2 ia-satma <ia@satma.mx> 1767393266 +0000	pull --quiet --no-edit --rebase origin main: fast-forward
+cb84ffa4852220222545be623c6b7f357afd8ed2 3a9489fbd8c5fe90ca713555fff3c32ade702cba ia-satma <ia@satma.mx> 1767393271 +0000	update by push
+3a9489fbd8c5fe90ca713555fff3c32ade702cba c52a48c22ae89647369b54fa48e2cb30fdf41080 ia-satma <ia@satma.mx> 1767393725 +0000	pull --quiet --no-edit --no-rebase --ff-only origin main: fast-forward
+c52a48c22ae89647369b54fa48e2cb30fdf41080 8807c2fd4a829239cd4487d8406571f0230c07ca ia-satma <ia@satma.mx> 1767394171 +0000	pull --quiet --no-edit --no-rebase --ff-only origin main: fast-forward
+8807c2fd4a829239cd4487d8406571f0230c07ca 568cc1d6c5c0b51e8770dcfc8206216291cf405b ia-satma <ia@satma.mx> 1767397318 +0000	pull origin main: fast-forward
+568cc1d6c5c0b51e8770dcfc8206216291cf405b d623062349e3515ad926fab0682cae73450b6842 ia-satma <ia@satma.mx> 1767398292 +0000	pull --quiet --no-edit --rebase origin main: fast-forward
+d623062349e3515ad926fab0682cae73450b6842 ac9a937d21ae810c3db56fdf54e486e576d15aa9 ia-satma <ia@satma.mx> 1767398294 +0000	update by push
+ac9a937d21ae810c3db56fdf54e486e576d15aa9 42af477a387f74036a75dbb8d579a394b753b260 ia-satma <ia@satma.mx> 1767398670 +0000	pull --quiet --no-edit --no-rebase --ff-only origin main: fast-forward
+42af477a387f74036a75dbb8d579a394b753b260 a17d4f28a914200bf8aa1de585294c4af5f0c4a6 ia-satma <ia@satma.mx> 1767398959 +0000	pull origin main: fast-forward
+a17d4f28a914200bf8aa1de585294c4af5f0c4a6 0057b0b90a9a7f1d04eb647e2c271293dfc6f2a2 ia-satma <ia@satma.mx> 1767399308 +0000	pull origin main: fast-forward
+0057b0b90a9a7f1d04eb647e2c271293dfc6f2a2 8dc669eaa3ecd7debcb16f053579e204e9e6cbec ia-satma <ia@satma.mx> 1767399508 +0000	pull origin main: fast-forward
+8dc669eaa3ecd7debcb16f053579e204e9e6cbec df69699f83bbf6e10cf60f0e7a822b5add9f566c ia-satma <ia@satma.mx> 1767399785 +0000	pull origin main: fast-forward
+df69699f83bbf6e10cf60f0e7a822b5add9f566c 39e17fa217ed143b7034d55126ea7f1f8c336cee ia-satma <ia@satma.mx> 1767400812 +0000	pull origin main: fast-forward
+39e17fa217ed143b7034d55126ea7f1f8c336cee e5a8f195b58c64630ac6e376ceda71afb06106bc ia-satma <ia@satma.mx> 1767401292 +0000	update by push
+e5a8f195b58c64630ac6e376ceda71afb06106bc 7fa01f102a0a59ed6ffe070aad8239717e5b3f83 ia-satma <ia@satma.mx> 1767405625 +0000	pull --quiet --no-edit --rebase origin main: fast-forward
+7fa01f102a0a59ed6ffe070aad8239717e5b3f83 f653df8e69f4fb1eee9ab7b5c65024e4e135bc9d ia-satma <ia@satma.mx> 1767406198 +0000	fetch --quiet --all: fast-forward
