@@ -1,35 +1,45 @@
-import { Client } from '@replit/crosis'; // Importación correcta según SDK
-// Si necesitas WebSocket nativo en Node, asegúrate de tener 'ws' instalado y configurado
-// import WebSocket from "ws"; 
+import { Client } from '@replit/crosis';
+
+// Definimos la interfaz del contexto para evitar la inferencia 'null'
+interface CrosisContext {
+    token: string;
+    replId: string;
+}
 
 export async function injectAgentConfiguration(replId: string, token: string, rulesContent: string) {
     console.log(`💉 Iniciando inyección Crosis en Repl: ${replId}...`);
 
-    const client = new Client();
+    // CORRECCIÓN CRÍTICA: Tipamos explícitamente el Cliente con la interfaz del contexto.
+    // Esto evita el error "not assignable to type 'null'".
+    const client = new Client<CrosisContext>();
 
     try {
-        // CORRECCIÓN: Se añade el segundo argumento requerido (callback de cierre)
+        // Conexión usando la API pública 'open'
         await client.open(
             {
                 context: {
                     token,
                     replId,
                 },
+                // Función requerida para refrescar metadatos si la conexión cae
                 fetchConnectionMetadata: async () => ({
                     token,
+                    replId,
                 }),
             },
-            // 👇 ESTE ES EL ARGUMENTO QUE FALTABA:
+            // Callback de cierre requerido por la firma de la función
             (reason) => {
-                console.log("⚠️ Conexión Crosis cerrada. Razón:", reason);
+                console.log("⚠️ Conexión Crosis cerrada o terminada. Razón:", reason);
             }
         );
 
-        console.log("✅ Conexión Crosis establecida.");
+        console.log("✅ Conexión Crosis establecida. Abriendo canal de archivos...");
 
         // Apertura del canal de archivos (Servicio 'files')
         const filesChannel = client.openChannel({ service: 'files' });
-        await filesChannel.promise; // Esperar handshake
+
+        // Esperar a que el canal esté listo (handshake completado)
+        await filesChannel.promise;
 
         // Escritura atómica de reglas
         console.log("📝 Escribiendo .agent/rules...");
@@ -46,6 +56,7 @@ export async function injectAgentConfiguration(replId: string, token: string, ru
 
     } catch (error) {
         console.error("🔴 Fallo en el protocolo Crosis:", error);
+        // Aseguramos el cierre del cliente en caso de error
         client.close();
         throw error;
     }
