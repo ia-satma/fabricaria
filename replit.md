@@ -51,5 +51,27 @@ Required secrets:
 - `STRIPE_SECRET_KEY` - Stripe API key (for billing)
 - `GOOGLE_AI_API_KEY` - Google Gemini API key (for AI features)
 
+## Design System: Cyber-Industrial
+- **Theme**: Dark mode with Slate/Zinc base tones
+- **Accent**: Neon Cyan (#00f0ff) for primary actions and highlights
+- **Borders**: Brutalist style (border-radius: 0) for industrial look
+- **Typography**: JetBrains Mono for headers/data, Inter for body text
+- **Cards**: Semi-transparent with glowing cyan borders on hover
+- **Buttons**: Uppercase, monospace, with neon glow effects
+
+### CSS Variables (globals.css)
+- `--primary`: Neon Cyan accent
+- `--background`: Dark slate
+- `--neon-glow`: Glow shadow for hover states
+- `--radius: 0rem`: Brutalist corners
+
+### Utility Classes
+- `.cyber-card`: Card with glowing border
+- `.neon-text`: Text with cyan glow
+- `.neon-border`: Element with glowing border
+- `.cyber-grid`: Background grid pattern
+
 ## Recent Changes
+- 2026-01-03: Cyber-Industrial theme applied - dark palette, neon cyan accents, brutalist corners
+- 2026-01-03: Centralized Agent types in features/agents/types.ts
 - 2026-01-02: Initial Replit setup - configured for port 5000, fixed CSS and component issues
