@@ -1,70 +1,36 @@
-```typescript
-import { Crosis } from "@replit/crosis"; // Pseudo-import: Assumes usage of @replit/crosis package wrapper
-import WebSocket from "ws";
-import { HandoffState } from "@/lib/swarm/schema";
-import { generateAgentsMarkDown } from "./context-generator";
+import { Client } from '@replit/crosis'; // Importación correcta según SDK
+// Si necesitas WebSocket nativo en Node, asegúrate de tener 'ws' instalado y configurado
+// import WebSocket from "ws"; 
 
-// Note: If @replit/crosis isn't fully typed or available in this env,
-// we'd use a raw WS implementation. For this "Headless Factory" code,
-// we'll assume standard Crosis Client structure or build a minimal adapter.
+export async function injectAgentConfiguration(replId: string, token: string, rulesContent: string) {
+    console.log(`💉 Iniciando inyección Crosis en Repl: ${replId}...`);
 
-export interface DNAContext {
-    ProjectName: string;
-    Rules: string;
-    AgentsConfig: string; // Legacy/Fallback static config
-    Handoff?: HandoffState; // New Handoff Protocol
-}
+    const client = new Client();
 
-export class CrosisInjector {
-    /**
-     * Injects the "DNA" (Critical Configuration) into the target Repl.
-     * This happens via WebSocket to ensure files exist BEFORE the main process/agent starts.
-     */
-    static async injectDNA(replId: string, token: string, context: DNAContext): Promise<boolean> {
-        console.log(`💉[Factory] Connecting to Repl ${ replId } via Crosis...`);
+    try {
+        // Conexión al contenedor
+        await client.connect({ token, replId });
 
-        // Mocking Crosis connection flow for the protocol implementation
-        // Real implementation requires opening a channel 'files' and sending 'write' commands.
+        // Apertura del canal de archivos (Servicio 'files')
+        const filesChannel = client.openChannel({ service: 'files' });
+        await filesChannel.promise; // Esperar handshake
 
-        /* 
-         * PROTOCOL IMPLEMENTATION (Pseudo-code for Crosis):
-         * 1. Connect WS to `wss://eval.repl.it/v2/eval` (or relevant cluster)
-         * 2. Authenticate with `token`
-* 3. Open Channel: service = 'files'
-    * 4. Send Command: { op: 'write', path: '.agent/rules', content: ... }
-         */
+        // Escritura atómica de reglas
+        console.log("📝 Escribiendo .agent/rules...");
+        await filesChannel.request({
+            write: {
+                path: '.agent/rules',
+                content: rulesContent
+            }
+        });
 
-try {
-    // Simulation of atomic write operations
-    console.log(`   > Injecting .agent/rules...`);
-    // await channel.request({ op: 'write', path: '.agent/rules', content: context.Rules });
+        console.log("✅ Inyección completada. Cerrando enlace.");
+        client.close();
+        return true;
 
-    // Handoff Protocol Logic
-    if (context.Handoff) {
-        console.log(`   > [SWARM] Generating Dynamic AGENTS.md from Handoff...`);
-        const dynamicAgentsConfig = generateAgentsMarkDown(context.Handoff);
-
-        console.log(`   > [SWARM] Injecting AGENTS.md...`);
-        // await channel.request({ op: 'write', path: 'AGENTS.md', content: dynamicAgentsConfig });
-
-        console.log(`   > [SWARM] Injecting .agent/handoff.json...`);
-        const handoffJson = JSON.stringify(context.Handoff, null, 2);
-        // await channel.request({ op: 'write', path: '.agent/handoff.json', content: handoffJson });
-
-    } else {
-        // Fallback for legacy static context
-        console.log(`   > Injecting AGENTS.md (Static)...`);
-        // await channel.request({ op: 'write', path: 'AGENTS.md', content: context.AgentsConfig });
-    }
-
-    console.log(`   > Injecting Hybrid Memory Config (replit.nix)...`);
-    // await channel.request({ op: 'write', path: 'replit.nix', content: '...postgres...' });
-
-    console.log(`✅ [Factory] DNA Injection Successful. Environment Secured.`);
-    return true;
-} catch (error) {
-    console.error("❌ [Factory] Injection Failed:", error);
-    return false;
-}
+    } catch (error) {
+        console.error("🔴 Fallo en el protocolo Crosis:", error);
+        client.close();
+        throw error;
     }
 }
