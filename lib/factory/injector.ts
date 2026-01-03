@@ -6,6 +6,14 @@ interface CrosisContext {
     replId: string;
 }
 
+// DNA Context para inyección de configuración
+export interface DNAContext {
+    ProjectName: string;
+    Rules: string;
+    AgentsConfig: string;
+    Handoff?: any;
+}
+
 export async function injectAgentConfiguration(replId: string, token: string, rulesContent: string) {
     console.log(`💉 Iniciando inyección Crosis en Repl: ${replId}...`);
 
@@ -43,18 +51,15 @@ export async function injectAgentConfiguration(replId: string, token: string, ru
         console.log("✅ Conexión Crosis establecida. Abriendo canal de archivos...");
 
         // Apertura del canal de archivos (Servicio 'files')
-        const filesChannel = client.openChannel({ service: 'files' });
-
-        // Esperar a que el canal esté listo (handshake completado)
-        await filesChannel.promise;
-
-        // Escritura atómica de reglas
-        console.log("📝 Escribiendo .agent/rules...");
-        await filesChannel.request({
-            write: {
-                path: '.agent/rules',
-                content: rulesContent
-            }
+        const filesChannel = await client.openChannel({ service: 'files' }, ({ channel }: any) => {
+            // Escritura atómica de reglas
+            console.log("📝 Escribiendo .agent/rules...");
+            channel.request({
+                write: {
+                    path: '.agent/rules',
+                    content: rulesContent
+                }
+            });
         });
 
         console.log("✅ Inyección completada. Cerrando enlace.");
@@ -66,5 +71,13 @@ export async function injectAgentConfiguration(replId: string, token: string, ru
         // Aseguramos el cierre del cliente en caso de error
         client.close();
         throw error;
+    }
+}
+
+// Wrapper class para compatibilidad con service.ts
+export class CrosisInjector {
+    static async injectDNA(replId: string, token: string, dna: DNAContext): Promise<boolean> {
+        const rulesContent = `${dna.Rules}\n\n# Agent Config\n${dna.AgentsConfig}`;
+        return await injectAgentConfiguration(replId, token, rulesContent);
     }
 }
