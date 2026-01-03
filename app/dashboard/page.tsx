@@ -80,7 +80,7 @@ export default async function DashboardPage() {
                         <CardTitle>Recent Users</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {users.length === 0 ? (
+                        {!users || users.length === 0 ? (
                             <div className="text-center py-8 text-muted-foreground">
                                 No users found. Database is empty.
                             </div>
@@ -107,8 +107,8 @@ export default async function DashboardPage() {
                                                 <td className="p-2">
                                                     <span
                                                         className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${user.isActive
-                                                                ? "bg-green-100 text-green-800"
-                                                                : "bg-gray-100 text-gray-800"
+                                                            ? "bg-green-100 text-green-800"
+                                                            : "bg-gray-100 text-gray-800"
                                                             }`}
                                                     >
                                                         {user.isActive ? "Active" : "Inactive"}
