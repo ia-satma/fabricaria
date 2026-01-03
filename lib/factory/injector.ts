@@ -27,7 +27,7 @@ export class CrosisInjector {
 export async function injectAgentConfiguration(replId: string, token: string, rulesContent: string) {
     console.log(`💉 Iniciando inyección Crosis en Repl: ${replId}...`);
 
-    const client = new Client<CrosisContext>();
+    const client = new Client<{ token: string; replId: string }>();
 
     try {
         await client.open(
@@ -42,7 +42,7 @@ export async function injectAgentConfiguration(replId: string, token: string, ru
                     conmanURL: `https://eval.replit.com`,
                     dotdevHostname: `${replId}.id.repl.co`,
                     error: null,
-                }),
+                } as any),
             },
             (reason) => {
                 console.log("⚠️ Conexión Crosis cerrada o terminada. Razón:", reason);

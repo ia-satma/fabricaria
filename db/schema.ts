@@ -40,3 +40,14 @@ export const agentMemories = pgTable("agent_memories", {
     embedding: vector("embedding", { dimensions: 768 }),
     createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const agents = pgTable("agents", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: text("name").notNull(),
+    replId: text("repl_id"),
+    url: text("url"),
+    status: text("status").default("booting"), // 'booting', 'active', 'failed'
+    tenantId: uuid("tenant_id").references(() => tenants.id),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+});
