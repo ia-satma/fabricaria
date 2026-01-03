@@ -46,7 +46,9 @@ export const agents = pgTable("agents", {
     name: text("name").notNull(),
     replId: text("repl_id"),
     url: text("url"),
-    status: text("status").default("booting"), // 'booting', 'active', 'failed'
+    status: text("status").default("booting"), // 'booting', 'active', 'failed', 'idle'
+    tasksCompleted: integer("tasks_completed").default(0),
+    cpuLoad: integer("cpu_load").default(0),
     tenantId: uuid("tenant_id").references(() => tenants.id),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
