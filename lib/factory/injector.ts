@@ -8,17 +8,22 @@ export async function injectAgentConfiguration(replId: string, token: string, ru
     const client = new Client();
 
     try {
-        // CORRECCIÓN: Usamos 'open' (público) en lugar de 'connect' (privado)
-        // La librería requiere una función fetchConnectionMetadata para reconexiones
-        await client.open({
-            context: {
-                token,
-                replId
+        // CORRECCIÓN: Se añade el segundo argumento requerido (callback de cierre)
+        await client.open(
+            {
+                context: {
+                    token,
+                    replId,
+                },
+                fetchConnectionMetadata: async () => ({
+                    token,
+                }),
             },
-            fetchConnectionMetadata: async () => ({
-                token, // En un caso real, aquí se renovaría el token si expirara
-            })
-        });
+            // 👇 ESTE ES EL ARGUMENTO QUE FALTABA:
+            (reason) => {
+                console.log("⚠️ Conexión Crosis cerrada. Razón:", reason);
+            }
+        );
 
         console.log("✅ Conexión Crosis establecida.");
 
