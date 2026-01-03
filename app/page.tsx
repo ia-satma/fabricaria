@@ -21,6 +21,15 @@ export default function Home() {
                         <span>fabricaria</span>
                     </div>
                     <div className="flex items-center gap-6">
+                        <Link href="/command" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-all">
+                            Command
+                        </Link>
+                        <Link href="/factory" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-all">
+                            Factory
+                        </Link>
+                        <Link href="/agents" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-all">
+                            Agents
+                        </Link>
                         <Link href="/playground" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-all">
                             Playground
                         </Link>
