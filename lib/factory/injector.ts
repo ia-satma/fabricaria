@@ -1,6 +1,5 @@
-import { Client } from '@replit/crosis';
+import { Client, FetchConnectionMetadataResult } from '@replit/crosis';
 
-// Definimos la interfaz del contexto para evitar la inferencia 'null'
 interface CrosisContext {
     token: string;
     replId: string;
@@ -9,25 +8,23 @@ interface CrosisContext {
 export async function injectAgentConfiguration(replId: string, token: string, rulesContent: string) {
     console.log(`💉 Iniciando inyección Crosis en Repl: ${replId}...`);
 
-    // CORRECCIÓN CRÍTICA: Tipamos explícitamente el Cliente con la interfaz del contexto.
-    // Esto evita el error "not assignable to type 'null'".
     const client = new Client<CrosisContext>();
 
     try {
-        // Conexión usando la API pública 'open'
         await client.open(
             {
                 context: {
                     token,
                     replId,
                 },
-                // Función requerida para refrescar metadatos si la conexión cae
-                fetchConnectionMetadata: async () => ({
+                fetchConnectionMetadata: async (): Promise<FetchConnectionMetadataResult> => ({
                     token,
-                    replId,
+                    gurl: `wss://eval.replit.com/connect/${replId}`,
+                    conmanURL: `https://eval.replit.com`,
+                    dotdevHostname: `${replId}.id.repl.co`,
+                    error: null,
                 }),
             },
-            // Callback de cierre requerido por la firma de la función
             (reason) => {
                 console.log("⚠️ Conexión Crosis cerrada o terminada. Razón:", reason);
             }
@@ -35,24 +32,32 @@ export async function injectAgentConfiguration(replId: string, token: string, ru
 
         console.log("✅ Conexión Crosis establecida. Abriendo canal de archivos...");
 
-        // Apertura del canal de archivos (Servicio 'files')
-        const filesChannel = client.openChannel({ service: 'files' });
+        return new Promise<boolean>((resolve, reject) => {
+            client.openChannel({ service: 'files' }, ({ channel }) => {
+                if (!channel) {
+                    console.error("🔴 Error abriendo canal");
+                    client.close();
+                    reject(new Error("No se pudo abrir el canal"));
+                    return;
+                }
 
-        // Esperar a que el canal esté listo (handshake completado)
-        await filesChannel.promise;
-
-        // Escritura atómica de reglas
-        console.log("📝 Escribiendo .agent/rules...");
-        await filesChannel.request({
-            write: {
-                path: '.agent/rules',
-                content: rulesContent
-            }
+                console.log("📝 Escribiendo .agent/rules...");
+                channel.request({
+                    write: {
+                        path: '.agent/rules',
+                        content: new TextEncoder().encode(rulesContent)
+                    }
+                }).then(() => {
+                    console.log("✅ Inyección completada. Cerrando enlace.");
+                    client.close();
+                    resolve(true);
+                }).catch((err) => {
+                    console.error("🔴 Error escribiendo archivo:", err);
+                    client.close();
+                    reject(err);
+                });
+            });
         });
-
-        console.log("✅ Inyección completada. Cerrando enlace.");
-        client.close();
-        return true;
 
     } catch (error) {
         console.error("🔴 Fallo en el protocolo Crosis:", error);
