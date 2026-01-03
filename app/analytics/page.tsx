@@ -3,33 +3,33 @@ import { Button } from "@/components/ui/button";
 import { BarChart3, TrendingUp, Users, Zap, Activity } from "lucide-react";
 import Link from "next/link";
 import { AnalyticsCharts } from "@/features/analytics/AnalyticsCharts";
-import { getAgentCount } from "@/features/agents/actions";
+import { getDashboardMetrics } from "@/features/analytics/actions";
 
 export default async function AnalyticsPage() {
-    const agentCount = await getAgentCount();
+    const dashboardMetrics = await getDashboardMetrics();
 
     const metrics = [
         {
             title: "Total Agents",
-            value: agentCount.toString(),
+            value: dashboardMetrics.totalAgents.toString(),
             change: "+12%",
             icon: Users,
         },
         {
             title: "Tasks Completed",
-            value: "4,636",
+            value: dashboardMetrics.totalTasksCompleted.toLocaleString(),
             change: "+23%",
             icon: Zap,
         },
         {
             title: "Avg. Response Time",
-            value: "1.2s",
+            value: dashboardMetrics.avgResponseTime,
             change: "-8%",
             icon: Activity,
         },
         {
             title: "Success Rate",
-            value: "98.7%",
+            value: dashboardMetrics.successRate,
             change: "+2.1%",
             icon: TrendingUp,
         },

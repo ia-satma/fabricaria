@@ -55,3 +55,12 @@ export const agents = pgTable("agents", {
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+export const analyticsEvents = pgTable("analytics_events", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    date: timestamp("date").notNull(),
+    category: text("category").notNull(),
+    value: integer("value").notNull(),
+    agentId: uuid("agent_id").references(() => agents.id),
+    createdAt: timestamp("created_at").defaultNow(),
+});
