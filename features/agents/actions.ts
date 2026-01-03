@@ -3,7 +3,10 @@
 import { db } from "@/db";
 import { agents } from "@/db/schema";
 import { desc } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import type { Agent, AgentStatus } from "./types";
+import { createAgentSchema, type CreateAgentInput } from "./schema";
 
 export async function getAgents(): Promise<Agent[]> {
     const result = await db
@@ -26,4 +29,29 @@ export async function getAgents(): Promise<Agent[]> {
 export async function getAgentCount(): Promise<number> {
     const result = await db.select().from(agents);
     return result.length;
+}
+
+export async function createAgent(input: CreateAgentInput) {
+    const validated = createAgentSchema.safeParse(input);
+
+    if (!validated.success) {
+        return { error: validated.error.flatten().fieldErrors };
+    }
+
+    const { name, role, objective } = validated.data;
+
+    const replId = `repl-${name.toLowerCase().replace(/\s+/g, "-")}-${Date.now().toString(36)}`;
+
+    await db.insert(agents).values({
+        name,
+        role,
+        objective,
+        replId,
+        status: "booting",
+        tasksCompleted: 0,
+        cpuLoad: 0,
+    });
+
+    revalidatePath("/agents");
+    redirect("/agents");
 }

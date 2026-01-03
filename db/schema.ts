@@ -44,6 +44,8 @@ export const agentMemories = pgTable("agent_memories", {
 export const agents = pgTable("agents", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
+    role: text("role"),
+    objective: text("objective"),
     replId: text("repl_id"),
     url: text("url"),
     status: text("status").default("booting"), // 'booting', 'active', 'failed', 'idle'
