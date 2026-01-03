@@ -1,8 +1,27 @@
 import { Client, FetchConnectionMetadataResult } from '@replit/crosis';
+import { HandoffState } from "@/lib/swarm/schema";
 
 interface CrosisContext {
     token: string;
     replId: string;
+}
+
+export interface DNAContext {
+    ProjectName: string;
+    Rules: string;
+    AgentsConfig: string;
+    Handoff?: HandoffState;
+}
+
+export class CrosisInjector {
+    static async injectDNA(replId: string, token: string, dna: DNAContext): Promise<boolean> {
+        const rulesContent = `# ${dna.ProjectName}\n${dna.Rules}\n\n${dna.AgentsConfig}`;
+        if (dna.Handoff) {
+            const handoffContext = `\n# Handoff Context\nTarget: ${dna.Handoff.target_role}\nTask: ${dna.Handoff.intent.summary}`;
+            return injectAgentConfiguration(replId, token, rulesContent + handoffContext);
+        }
+        return injectAgentConfiguration(replId, token, rulesContent);
+    }
 }
 
 export async function injectAgentConfiguration(replId: string, token: string, rulesContent: string) {
