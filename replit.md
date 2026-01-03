@@ -72,6 +72,9 @@ Required secrets:
 - `.cyber-grid`: Background grid pattern
 
 ## Recent Changes
+- 2026-01-03: Analytics Dashboard added (/analytics) with Recharts visualizations
+- 2026-01-03: Create Agent form implemented with Zod validation and Server Actions
+- 2026-01-03: Database seeded with 5 test agents, E2E flow verified
 - 2026-01-03: Cyber-Industrial theme applied - dark palette, neon cyan accents, brutalist corners
 - 2026-01-03: Centralized Agent types in features/agents/types.ts
 - 2026-01-02: Initial Replit setup - configured for port 5000, fixed CSS and component issues

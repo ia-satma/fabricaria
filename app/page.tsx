@@ -30,6 +30,9 @@ export default function Home() {
                         <Link href="/agents" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-all">
                             Agents
                         </Link>
+                        <Link href="/analytics" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-all">
+                            Analytics
+                        </Link>
                         <Link href="/playground" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-all">
                             Playground
                         </Link>
