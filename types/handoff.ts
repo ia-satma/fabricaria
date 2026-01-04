@@ -1,36 +1,23 @@
 
 /**
- * SWARM HANDOFF TYPES (Step 61)
- * Protocol for transferring agents context via Git.
+ * SWARM HANDOFF TYPES (Step 82)
+ * Protocol for passing state between specialized agents.
  */
 
-
-export interface HandoffTicket {
-    meta: {
-        id: string;
-        source: string;
-        target: string;
-    };
-    state: {
-        status: "BUFFERED" | "STUCK" | "RESOLVED";
-        context_summary: string;
-    };
-    files_focus: string[];
-    created_at: string;
+export interface HandoffPacket {
+    source: string;
+    target: string;
+    context: string;
+    plan?: any;
+    artifacts: string[];
+    status: 'PENDING' | 'COMPLETED' | 'REJECTED';
+    metadata: Record<string, any>;
 }
 
-export function createHandoffTicket(summary: string, files: string[]): HandoffTicket {
-    return {
-        meta: {
-            id: `handoff_${Date.now()}`,
-            source: "replit-worker-1",
-            target: "architect"
-        },
-        state: {
-            status: "BUFFERED",
-            context_summary: summary
-        },
-        files_focus: files,
-        created_at: new Date().toISOString()
-    };
+export async function executeHandoff(packet: HandoffPacket) {
+    console.log(`🤝 [Handoff] Transferring control: ${packet.source} -> ${packet.target}`);
+
+    // In a real swarm, this would persist to db/git and wake up the next agent
+    // For now, it's our foundational state protocol
+    return packet;
 }

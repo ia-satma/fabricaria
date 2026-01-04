@@ -1,24 +1,22 @@
-# AGENT RULES 🤖
+# AGENT RULES 🤖 (Procedural Memory - Step 76)
+
+## 🛡️ SEGURIDAD (Aegis & DLP)
+- **REGLA 1 (Privacidad)**: NUNCA escribas secretos, API Keys o PII en el código. Usa `process.env`.
+- **REGLA 2 (Circuit Breaker)**: Si los tokens de "thoughts" superan el límite (3000), aborta inmediatamente.
+- **REGLA 3 (Aegis)**: Prohibidos los comandos destructivos (`rm -rf`, `DROP TABLE`, etc.).
 
 ## 🏗️ ESTRUCTURA (FSD Lite)
-- **OBLIGATORIO**: Toda la lógica de negocio debe residir en `features/<feature_name>/`.
-- **PROHIBIDO**: Crear archivos `index.ts` que solo actúen como re-exportadores (Barrel Files). Esto infla el contexto de la IA y causa alucinaciones. Usa importaciones directas.
-- **DETERMINISMO**: Las funciones de herramientas deben usar esquemas Zod para validación de entrada/salida.
+- **REGLA 4 (Localidad)**: Toda la lógica de negocio en `features/`. No ensucies la raíz.
+- **REGLA 5 (No Barrel Files)**: Prohibidos los `index.ts` de re-exportación. Importaciones directas.
+- **REGLA 6 (Schema-First)**: Define siempre el esquema Zod `schemas/` antes de la UI o API.
 
-## 📜 SCHEMA-FIRST (Zod Mandate)
-- **GLOBO DE ORO**: Antes de generar cualquier componente de UI o Endpoint de API, **DEBES** generar primero el esquema Zod de los datos.
-- **GROUNDING**: Zod actúa como "tierra firme" para el modelo. Primero define la verdad de los datos en `schemas/` o dentro del directorio de la feature.
+## 💻 CÓDIGO & ESTILO
+- **REGLA 7 (React)**: Usa componentes funcionales y Hooks. Prohibido Class Components.
+- **REGLA 8 (Atomicidad)**: Si editas un archivo, genera el archivo completo. No envíes diffs parciales que puedan corromper el estado.
+- **REGLA 9 (Consistencia)**: Sigue estrictamente Tailwind CSS y Shadcn/UI según `AGENTS.md`.
 
-## 🛡️ SEGURIDAD (Aegis)
-- **CONFIANZA CERO**: Nunca ejecutes comandos destructivos sin validación manual o pre-vuelo de Aegis.
-- **PRIVACIDAD**: Usa `lib/security/sanitizer.ts` para limpiar PII de cualquier log o historial de chat.
+## 🧠 OPERACIONES
+- **REGLA 10 (Protocolo)**: Lee `AGENTS.md` (Constitución) antes de iniciar. No contradigas el @TechStack.
+- **REGLA 11 (Audit)**: Genera evidencia visual (`scripts/qa/capture_artifact.ts`) después de cualquier cambio en la UI.
 
-## 💰 ECONOMÍA (FinOps)
-- **TOKEN MANAGEMENT**: Prioriza `gemini-1.5-flash` para tareas mecánicas. Usa `gemini-1.5-pro` solo para razonamiento complejo o planeación.
-- **RAG vs CACHE**: Si un contexto se usa más de 2.5 veces por hora y supera los 500k tokens, propón la creación de un Cache Context para ahorrar costos.
-
-## 🎨 DISEÑO (Vibe-Master)
-- **AESTHETICS**: Sigue estrictamente Shadcn/UI y Tailwind. No inventes estilos ad-hoc.
-- **VISUAL QA (Step 71)**: Después de una tarea de UI, **DEBES** ejecutar `scripts/qa/capture_artifact.ts` para generar evidencia visual.
-- **ASSET FACTORY (Step 72)**: Si necesitas una imagen y no existe, **GÉNÉRALA** usando `scripts/visual/generate_placeholder.ts`. No uses enlaces externos rotos ni dejes huecos vacíos.
-- **AUTOCRÍTICA**: Analiza la captura con Gemini Vision y genera un reporte JSON de auto-evaluación. No digas que funciona, muéstralo.
+ESTAS REGLAS SON EL FIREWALL COGNITIVO. NO SE NEGOCIAN.
