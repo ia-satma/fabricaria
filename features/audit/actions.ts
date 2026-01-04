@@ -1,15 +1,16 @@
 
 "use server";
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GeminiClient } from "../../lib/ai/gemini-client";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || ""); // REMOVED
 
-export async function auditCodeAction(code: string): Promise<{ score: number; report: string }> {
-    try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+export async function auditCodeAction(code: string): Promise<{ score: number; vibeScore: number; report: string; vibeCritique: string; status: string }> {
+  try {
+    const client = new GeminiClient("gemini-2.5-flash", "QA_AUDIT");
+    // const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }); // REMOVED
 
-        const prompt = `
+    const prompt = `
       Act as a Senior Code Auditor. Analyze the following code snippet.
       Rate it from 0 to 100 on code quality, security, and performance.
       Provide a brief report justifying the score.
@@ -24,14 +25,13 @@ export async function auditCodeAction(code: string): Promise<{ score: number; re
       }
     `;
 
-        const result = await model.generateContent(prompt);
-        const text = result.response.text();
-        const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    const text = await client.generateContent(prompt);
+    const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
 
-        return JSON.parse(cleanedText);
-    } catch (error) {
-        console.error("Audit Failed:", error);
-        // Fallback
-        return { score: 0, report: "Audit failed to execute due to AI error." };
-    }
+    return JSON.parse(cleanedText);
+  } catch (error) {
+    console.error("Audit Failed:", error);
+    // Fallback
+    return { score: 0, vibeScore: 0, report: "Audit failed to execute due to AI error.", vibeCritique: "N/A", status: "ERROR" };
+  }
 }

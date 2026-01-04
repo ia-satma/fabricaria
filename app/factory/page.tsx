@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FactorySummaryGrid } from "@/features/factory/FactorySummaryGrid";
 import { ProductionChart } from "@/features/factory/ProductionChart";
+
 import { WorkerStatusTable } from "@/features/factory/WorkerStatusTable";
 import { ResearchForm } from "@/features/research/components/research-form";
 import { getDashboardMetrics } from "@/features/dashboard/actions";

@@ -61,7 +61,19 @@ export function ResearchForm() {
                     <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-md text-emerald-500 flex items-start gap-2 animate-in fade-in">
                         <CheckCircle className="h-5 w-5 shrink-0 mt-0.5" />
                         <div className="space-y-2 w-full">
-                            <p className="font-semibold">Análisis Completado</p>
+                            <div className="flex justify-between items-center">
+                                <p className="font-semibold">Análisis Completado</p>
+                                {/* Strategy Badge */}
+                                {result && JSON.parse(result).metadata?.memoryStrategy === 'HOT_CACHE' ? (
+                                    <span className="text-xs px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 flex items-center gap-1">
+                                        🔥 MEMORIA CALIENTE
+                                    </span>
+                                ) : (
+                                    <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center gap-1">
+                                        🧊 MEMORIA FRÍA
+                                    </span>
+                                )}
+                            </div>
                             <pre className="text-xs bg-black/20 p-2 rounded overflow-x-auto max-h-40">
                                 {result}
                             </pre>

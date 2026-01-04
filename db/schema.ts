@@ -71,6 +71,7 @@ export const learnedPatterns = pgTable("learned_patterns", {
     description: text("description"),
     metadata: jsonb("metadata").default({}),
     embedding: vector("embedding", { dimensions: 768 }),
+    tenantId: uuid("tenant_id").references(() => tenants.id),
     createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -79,6 +80,40 @@ export const fabricationQueue = pgTable("fabrication_queue", {
     jobId: text("job_id").notNull(),
     status: text("status").notNull(),
     payload: jsonb("payload").default({}),
+    handoffData: jsonb("handoff_data"), // Stores HandoffPacket
+    tenantId: uuid("tenant_id").references(() => tenants.id), // RLS Step 26
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+export const codeAudits = pgTable("code_audits", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    repoUrl: text("repo_url").notNull(),
+    hash: text("hash").notNull(), // SHA-256
+    blueprint: jsonb("blueprint").notNull(),
+    tenantId: uuid("tenant_id").references(() => tenants.id), // RLS Step 26
+    createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const securityLogs = pgTable("security_logs", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    actionType: text("action_type").notNull(),
+    payload: jsonb("payload").notNull(),
+    reason: text("reason").notNull(),
+    severity: text("severity").default("high"), // 'low', 'medium', 'high', 'critical'
+    tenantId: uuid("tenant_id").references(() => tenants.id), // RLS Step 26
+    createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const tokenUsageLogs = pgTable("token_usage_logs", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    agentType: text("agent_type").notNull(), // 'RESEARCH', 'CODER', 'QA'
+    model: text("model").notNull(),
+    inputTokens: integer("input_tokens").notNull(),
+    outputTokens: integer("output_tokens").notNull(),
+    costUsd: text("cost_usd").notNull(), // Store as text to avoid float precision issues, or decimal
+    contextHash: text("context_hash"),
+    tenantId: uuid("tenant_id").references(() => tenants.id), // RLS Step 26
+    createdAt: timestamp("created_at").defaultNow(),
+});
+

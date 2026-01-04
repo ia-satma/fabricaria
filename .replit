@@ -1,42 +1,15 @@
-modules = ["nodejs-20", "web", "nix", "postgresql-16"]
-[agent]
-expertMode = true
+run = "npm start"
+entrypoint = "index.ts"
+
+[modules]
+nodeBundle = true
 
 [nix]
-channel = "stable-25_05"
+channel = "stable-24.05"
 
-[workflows]
-runButton = "Project"
-
-[[workflows.workflow]]
-name = "Project"
-mode = "parallel"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Next.js Dev Server"
-
-[[workflows.workflow]]
-name = "Next.js Dev Server"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
-waitForPort = 5000
-
-[workflows.workflow.metadata]
-outputType = "webview"
-
-[[ports]]
-localPort = 5000
-externalPort = 80
+[unitTest]
+language = "typescript"
 
 [deployment]
-deploymentTarget = "autoscale"
-run = ["npm", "run", "run-web"]
+run = ["npm", "start"]
 build = ["npm", "run", "build"]
-
-# Worker entry point (Experimental / Manual usage)
-# To run worker: npm run run-worker

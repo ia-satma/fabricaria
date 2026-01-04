@@ -1,54 +1,42 @@
-import fs from 'fs';
-import path from 'path';
 
-async function main() {
-    console.log("🛫 [DevOps] Initiating Pre-Flight Checks...");
-    let passed = true;
+import { exec } from 'child_process';
+import util from 'util';
 
-    // 1. Environment Variables
-    const requiredVars = ['DATABASE_URL'];
-    // Note: STRIPE might be optional for build, but critical for run.
-    const missingVars = requiredVars.filter(v => !process.env[v]);
+const execAsync = util.promisify(exec);
 
-    if (missingVars.length > 0) {
-        console.error(`❌ Missing Critical Env Vars: ${missingVars.join(', ')}`);
-        passed = false;
-    } else {
-        console.log("✅ Environment Variables Present.");
-    }
+async function preDeploy() {
+    console.log("🚀 [Pre-Deploy] Starting final quality gate...");
 
-    // 2. Critical Files
-    // Check if MCP Server file exists
-    const mcpPath = path.join(process.cwd(), 'lib/mcp/stripe-server.ts');
-    if (!fs.existsSync(mcpPath)) {
-        console.error(`❌ MCP Server file missing at ${mcpPath}`);
-        passed = false;
-    } else {
-        console.log("✅ MCP Server file verified.");
-    }
+    try {
+        // 1. Build validation
+        console.log("📦 [Pre-Deploy] Checking build...");
+        await execAsync('npm run build');
+        console.log("✅ Build successful.");
 
-    // 3. Deployment Config
-    const replitConfigPath = path.join(process.cwd(), '.replit');
-    if (fs.existsSync(replitConfigPath)) {
-        const config = fs.readFileSync(replitConfigPath, 'utf8');
-        if (config.includes('run-web') && config.includes('run-worker')) {
-            console.log("✅ .replit configured for Split-Brain (Found run-web/run-worker references).");
+        // 2. Test validation
+        console.log("🧪 [Pre-Deploy] Running tests...");
+        await execAsync('npm test');
+        console.log("✅ All tests passed.");
+
+        // 3. Environment Check
+        console.log("🌍 [Pre-Deploy] Verifying environment variables...");
+        const requiredEnv = ['DATABASE_URL', 'GEMINI_API_KEY'];
+        const missing = requiredEnv.filter(env => !process.env[env]);
+
+        if (missing.length > 0) {
+            console.warn(`⚠️ Warning: Missing production variables: ${missing.join(', ')}`);
         } else {
-            console.warn("⚠️ .replit might not be fully configured for Split-Brain.");
+            console.log("✅ Environment ready.");
         }
-    }
 
-    if (passed) {
-        console.log("\n🚀 READY FOR DEPLOYMENT");
-        console.log("   Legacy Command: npm run start");
-        console.log("   Worker Command: npm run run-worker");
+        console.log("\n✨ LISTO PARA DESPLIEGUE: https://fabricaria.replit.app");
         process.exit(0);
-    } else {
-        console.error("\n🛑 HALT: Pre-flight checks failed.");
+
+    } catch (error: any) {
+        console.error("\n❌ [Pre-Deploy] GOLPE DE ESTADO - CALIDAD NO ALCANZADA");
+        console.error(error.stdout || error.message);
         process.exit(1);
     }
 }
 
-if (require.main === module) {
-    main().catch(console.error);
-}
+preDeploy();
