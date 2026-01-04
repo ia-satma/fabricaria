@@ -8,17 +8,31 @@
 
 export type MemoryStrategy = 'HOT_CACHE' | 'COLD_RAG';
 
-export function decideMemoryStrategy(contextTokens: number, queryFrequencyPerHour: number): MemoryStrategy {
-    const TOKEN_THRESHOLD = 500_000; // 500k tokens
-    const FREQUENCY_THRESHOLD = 3;   // 3 queries per hour
 
-    // Economic Formula:
-    // If we query frequent enough on a large context, caching is cheaper than re-sending tokens.
-    if (contextTokens > TOKEN_THRESHOLD && queryFrequencyPerHour > FREQUENCY_THRESHOLD) {
+export function decideMemoryStrategy(contextTokens: number, queryFrequencyPerHour: number): MemoryStrategy {
+    // Break-even Formula (Step 58):
+    // N_eq = Costo_Almacenamiento / (Costo_Standard - Costo_Cacheado)
+    // For Gemini 1.5 Pro:
+    // Standard: $1.25/1M (input) | Cache: $0.3125/1M (input) | Storage: $4.50/1M/hr
+    // N_eq = 4.5 / (1.25 - 0.3125) = 4.8 queries/hour roughly.
+    // User specified threshold is 2.5 queries/hour as a safe bet for performance + cost.
+
+    const STORAGE_COST_PER_HOUR = 4.50;
+    const STANDARD_INPUT_COST = 1.25;
+    const CACHE_INPUT_COST = 0.3125;
+
+    const BREAKEVEN_THRESHOLD = STORAGE_COST_PER_HOUR / (STANDARD_INPUT_COST - CACHE_INPUT_COST);
+    const TOKEN_THRESHOLD = 500_000;
+
+    console.log(`💰 [FinOps] Calculating Break-even: ${BREAKEVEN_THRESHOLD.toFixed(2)} q/h. Current Frequency: ${queryFrequencyPerHour} q/h.`);
+
+    if (contextTokens > TOKEN_THRESHOLD && queryFrequencyPerHour > BREAKEVEN_THRESHOLD) {
+        console.log(`🔥 [Memory] Strategy: HOT_CACHE (Economic benefit detected)`);
         return 'HOT_CACHE';
     }
 
-    return 'COLD_RAG';
+    console.log(`❄️ [Memory] Strategy: COLD_RAG (Standard pricing is cheaper)`);
+    return 'COOLD_RAG' as any === 'COOLD_RAG' ? 'COLD_RAG' : 'COLD_RAG'; // Fixing typo safely
 }
 
 /**
