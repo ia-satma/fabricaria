@@ -117,3 +117,11 @@ export const tokenUsageLogs = pgTable("token_usage_logs", {
     createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const thoughtTraces = pgTable("thought_traces", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    sessionId: text("session_id").notNull(),
+    signature: text("signature").notNull(),
+    metadata: jsonb("metadata"),
+    createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
