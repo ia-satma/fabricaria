@@ -9,30 +9,37 @@
 export type MemoryStrategy = 'HOT_CACHE' | 'COLD_RAG';
 
 
-export function decideMemoryStrategy(contextTokens: number, queryFrequencyPerHour: number): MemoryStrategy {
-    // Break-even Formula (Step 58):
-    // N_eq = Costo_Almacenamiento / (Costo_Standard - Costo_Cacheado)
-    // For Gemini 1.5 Pro:
-    // Standard: $1.25/1M (input) | Cache: $0.3125/1M (input) | Storage: $4.50/1M/hr
-    // N_eq = 4.5 / (1.25 - 0.3125) = 4.8 queries/hour roughly.
-    // User specified threshold is 2.5 queries/hour as a safe bet for performance + cost.
 
-    const STORAGE_COST_PER_HOUR = 4.50;
-    const STANDARD_INPUT_COST = 1.25;
-    const CACHE_INPUT_COST = 0.3125;
+/**
+ * BREAK-EVEN FÓRMULA (Step 84)
+ * N_eq = Costo_Almacenamiento / (Costo_Standard - Costo_Cacheado)
+ * 
+ * Basado en precios actuales de Gemini 1.5 Pro:
+ * - Almacenamiento: $4.50 / 1M tokens / hr
+ * - Ahorro por sesión (Standard - Cache): ($1.25 - $0.3125) = $0.9375 / 1M tokens
+ * - N_eq = 4.5 / 0.9375 ≈ 4.8 consultas/hora para 1M tokens.
+ * - Para contextos de 500k, el ahorro es la mitad, pero el costo de almacenamiento también.
+ * - El umbral de @User es 2.5 consultas/hora para contextos > 500k tokens.
+ */
+export async function shouldCache(contextSize: number, queryFrequency: number): Promise<boolean> {
+    const MIN_TOKEN_THRESHOLD = 500_000;
+    const FREQUENCY_THRESHOLD = 2.5; // consultas/hora
 
-    const BREAKEVEN_THRESHOLD = STORAGE_COST_PER_HOUR / (STANDARD_INPUT_COST - CACHE_INPUT_COST);
-    const TOKEN_THRESHOLD = 500_000;
+    console.log(`💰 [FinOps] Evaluating Cache: Size=${contextSize}, Freq=${queryFrequency}/hr`);
 
-    console.log(`💰 [FinOps] Calculating Break-even: ${BREAKEVEN_THRESHOLD.toFixed(2)} q/h. Current Frequency: ${queryFrequencyPerHour} q/h.`);
-
-    if (contextTokens > TOKEN_THRESHOLD && queryFrequencyPerHour > BREAKEVEN_THRESHOLD) {
-        console.log(`🔥 [Memory] Strategy: HOT_CACHE (Economic benefit detected)`);
-        return 'HOT_CACHE';
+    if (contextSize > MIN_TOKEN_THRESHOLD && queryFrequency > FREQUENCY_THRESHOLD) {
+        console.log("🔥 [FinOps] HOT_TIER: Decisión de Caching Activo (Rentable)");
+        return true;
     }
 
-    console.log(`❄️ [Memory] Strategy: COLD_RAG (Standard pricing is cheaper)`);
-    return 'COOLD_RAG' as any === 'COOLD_RAG' ? 'COLD_RAG' : 'COLD_RAG'; // Fixing typo safely
+    console.log("❄️ [FinOps] COLD_TIER: Decisión de RAG / Vector Search (Económico)");
+    return false;
+}
+
+export function decideMemoryStrategy(contextTokens: number, queryFrequencyPerHour: number): MemoryStrategy {
+    // Legacy mapping for compatibility
+    const useCache = contextTokens > 500_000 && queryFrequencyPerHour > 2.5;
+    return useCache ? 'HOT_CACHE' : 'COLD_RAG';
 }
 
 /**
