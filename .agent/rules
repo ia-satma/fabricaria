@@ -20,4 +20,5 @@
 ## 🎨 DISEÑO (Vibe-Master)
 - **AESTHETICS**: Sigue estrictamente Shadcn/UI y Tailwind. No inventes estilos ad-hoc.
 - **VISUAL QA (Step 71)**: Después de una tarea de UI, **DEBES** ejecutar `scripts/qa/capture_artifact.ts` para generar evidencia visual.
+- **ASSET FACTORY (Step 72)**: Si necesitas una imagen y no existe, **GÉNÉRALA** usando `scripts/visual/generate_placeholder.ts`. No uses enlaces externos rotos ni dejes huecos vacíos.
 - **AUTOCRÍTICA**: Analiza la captura con Gemini Vision y genera un reporte JSON de auto-evaluación. No digas que funciona, muéstralo.

@@ -17,66 +17,74 @@ export class GeminiClient {
         this.model = genAI.getGenerativeModel({ model: modelName });
     }
 
-    async generateContent(prompt: string, config?: { responseMimeType?: string }): Promise<string> {
+    async generateContent(prompt: string, config?: { responseMimeType?: string, thinkingLevel?: "LOW" | "HIGH" }): Promise<string> {
         console.log(`🤖 [${this.agentType}] Calling Gemini (${this.modelName})...`);
-        const start = Date.now();
-
+        const MAX_THOUGHT_TOKENS = 3000;
+        const controller = new AbortController();
 
         try {
-            // TSIP: Retrieve existing signature for session (Step 54)
-            const sessionId = "global-session"; // TODO: Pass from worker
+            const sessionId = "global-session";
             const signature = await GeminiCacheManager.getThoughtSignature(sessionId);
 
-            // Re-get model with config if provided
             const generationConfig = config ? { ...config } : {};
+            const modelParams: any = {
+                model: this.modelName,
+                generationConfig,
+            };
 
-            // TSIP: Inject signature if exists
-            const modelParams: any = { model: this.modelName, generationConfig };
             if (signature) {
-                console.log(`🧠 [TSIP] Re-injecting thought signature for session: ${sessionId}`);
                 modelParams.thought_signature = signature;
             }
 
             const activeModel = genAI.getGenerativeModel(modelParams);
 
-            const result = await activeModel.generateContent(prompt);
-            const response = result.response;
-            const text = response.text();
+            // Using Streaming for Real-time Token Monitoring (Circuit Breaker V2)
+            const result = await activeModel.generateContentStream(prompt);
 
-            // TSIP: Capture new signature (Step 54)
+            let fullText = "";
+            let currentThoughts = 0;
+
+            for await (const chunk of result.stream) {
+                const thoughts = (chunk as any).usageMetadata?.thoughtsTokenCount || 0;
+                currentThoughts += thoughts;
+
+                if (currentThoughts > MAX_THOUGHT_TOKENS) {
+                    console.error(`💸 [Circuit-Breaker] PRESTUPUESTO COGNITIVO EXCEDIDO: ${currentThoughts} tokens.`);
+                    controller.abort();
+                    throw new Error("PRESUPUESTO COGNITIVO EXCEDIDO");
+                }
+
+                fullText += chunk.text();
+            }
+
+            const response = await result.response;
+
+            // TSIP: Capture new signature
             const newSignature = (response as any).thought_signature;
             if (newSignature) {
-                console.log(`🧠 [TSIP] Captured new thought signature.`);
                 await GeminiCacheManager.saveThoughtSignature(sessionId, newSignature);
             }
 
-            // Usage Metatada
+            // Usage Accounting
             const usage = response.usageMetadata || { promptTokenCount: 0, candidatesTokenCount: 0 };
-            const inputTokens = usage.promptTokenCount;
-            const outputTokens = usage.candidatesTokenCount;
+            const cost = calculateCost(this.modelName, usage.promptTokenCount, usage.candidatesTokenCount);
 
-            // FinOps Tracking
-            const cost = calculateCost(this.modelName, inputTokens, outputTokens);
-
-            // Circuit Breaker Check
             checkBudget(cost);
+            this.logUsage(usage.promptTokenCount, usage.candidatesTokenCount, cost).catch(() => { });
 
-            // Log Async (don't block response)
-            this.logUsage(inputTokens, outputTokens, cost).catch(err =>
-                console.error("Failed to log token usage:", err)
-            );
-
-            console.log(`💸 [FinOps] Call Cost: $${cost} (${inputTokens} in / ${outputTokens} out)`);
-
-            return text;
+            return fullText;
 
         } catch (error: any) {
-            // TSIP: Fallback for Invalid Argument (Step 54)
-            if (error?.message?.includes("400") || error?.status === 400) {
-                console.warn(`🛡️ [TSIP] Fallback: Invalid signature. Retrying without signature...`);
-                return this.generateContent(prompt, config); // Re-run without signature (next call won't find it in DB if cleared)
+            if (error.message === "PRESUPUESTO COGNITIVO EXCEDIDO") {
+                console.warn(`🔄 [Circuit-Breaker] Triggering Fallback to Flash...`);
+                // Fallback to a cheaper/simpler execution
+                const fallbackClient = new GeminiClient("gemini-1.5-flash", this.agentType);
+                return fallbackClient.generateContent(prompt, { ...config, thinkingLevel: "LOW" });
             }
-            console.error("Gemini Client Error:", error);
+
+            if (error?.message?.includes("400") || error?.status === 400) {
+                return this.generateContent(prompt, config);
+            }
             throw error;
         }
     }
