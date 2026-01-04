@@ -22,7 +22,8 @@ async function generateDailyBriefing() {
             WHERE created_at > NOW() - INTERVAL '1 day'
         `);
 
-        const { total_cost, total_tasks, active_users } = (stats as any[])[0];
+        const rows = (stats as any).rows || (stats as any);
+        const { total_cost, total_tasks, active_users } = rows[0] || { total_cost: 0, total_tasks: 0, active_users: 0 };
 
         // 2. Generar resumen agéntico con Gemini Pro
         const client = new GeminiClient("gemini-1.5-pro", "BRIEFING_BOT");
