@@ -15,7 +15,7 @@ async function generateDailyBriefing() {
         // 1. Obtener costos de las últimas 24h
         const stats = await db.execute(sql`
             SELECT 
-                COALESCE(SUM(cost_usd), 0) as total_cost,
+                COALESCE(SUM(cost_usd::numeric), 0) as total_cost,
                 COUNT(*) as total_tasks,
                 COUNT(DISTINCT tenant_id) as active_users
             FROM token_usage_logs
