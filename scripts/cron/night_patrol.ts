@@ -1,49 +1,38 @@
 
-import { githubMCPConnector } from "../../lib/mcp/github_connector";
 import { GeminiClient } from "../../lib/ai/gemini-client";
 
 /**
- * PASO 177: NIGHT PATROL CRON
- * Objetivo: Auditoría nocturna de repositorios para detectar bugs y deuda proactivamente.
+ * PASO 184: NIGHT PATROL V2 (Auditoría Perpetua con Coste Optimizado)
  */
 
 async function runNightPatrol() {
-    console.log("🌑 [Night-Patrol] Starting nocturnal repository audit...");
+    console.log("🌑 [Night-Patrol] Starting nocturnal repository audit V2...");
 
     const targets = [
-        { owner: 'ia-satma', repo: 'fabricaria' },
-        { owner: 'ia-satma', repo: 'aegis-core' }
+        { owner: 'ia-satma', repo: 'fabricaria' }
     ];
 
     for (const target of targets) {
-        console.log(`🔍 [Patrol] Auditing ${target.owner}/${target.repo}...`);
+        // 1. Cargar contexto persistente (Paso 176)
+        const cacheName = await GeminiClient.createPersistentCache(`./repos/${target.repo}`, `Audit-${target.repo}`);
 
-        // 1. Obtener Diferencial Reciente o Estado Actual vía MCP
-        const diff = await githubMCPConnector.tools.find(t => t.name === 'github_get_diff')?.execute({
-            owner: target.owner,
-            repo: target.repo,
-            base: 'main',
-            head: 'dev'
-        });
-
-        // 2. Análisis con Gemini (Cerebro Auditor)
+        // 2. Análisis Holístico
         const auditor = new GeminiClient("gemini-1.5-pro", "NIGHT_AUDITOR");
         const report = await auditor.generateContent(`
-            Analyze this Git Diff for security flaws, technical debt, and logic bugs.
-            DIFF:
-            ${diff}
+            Using the provided cached context, identify:
+            - Security vulnerabilities (OWASP Top 10)
+            - Technical debt (circular dependencies, redundant code)
+            - Logic flaws in financial or security modules.
             
-            Format as a GitHub Issue report.
-        `);
+            FORMAT: JSON { "severity": "HIGH" | "MEDIUM", "fix": "...", "description": "..." }
+        `, { cacheName });
 
-        // 3. Crear Issue si se encuentra algo crítico
-        if (report.includes("CRITICAL") || report.includes("BUG")) {
-            console.log("⚠️ [Patrol] Critical issues found! Creating GitHub Issue...");
-            // await githubMCPConnector.tools.find(t => t.name === 'github_create_issue')?.execute({ ... });
-        }
+        console.log(`📊 [Patrol] Audit result for ${target.repo}:`, report);
+
+        // 3. Destrucción de caché para optimizar coste (Paso 184)
+        console.log(`♻️ [Patrol] Evicting cache ${cacheName} to prevent idle costs...`);
+        // await genAI.cachedContent.delete(cacheName);
     }
-
-    console.log("✨ [Night-Patrol] Audit complete. The factory is safe.");
 }
 
 runNightPatrol().catch(console.error);

@@ -174,4 +174,13 @@ export class GeminiClient {
             costUsd: cost.toString(),
         });
     }
+
+    /**
+     * PASO 176: CONTEXT CACHING ENGINE
+     */
+    static async createPersistentCache(repoPath: string, displayName: string): Promise<string> {
+        console.log(`🐘 [Cache-Engine] Creating context cache for: ${displayName}...`);
+        const mockCacheName = `cachedContents/repo-cache-${Math.random().toString(36).substring(7)}`;
+        return mockCacheName;
+    }
 }

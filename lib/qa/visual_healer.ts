@@ -94,3 +94,14 @@ export async function applyVisualPatch(input: VisualPatchInput) {
     await sourceFile.save();
     console.log(`✅ [Visual-Healer] AST Patch applied. New classes: ${newClassName}`);
 }
+
+/**
+ * Wrapper for Step 186
+ */
+export async function apply_visual_patch(filePath: string, targetId: string, classesToAdd: string) {
+    return applyVisualPatch({
+        filePath,
+        targetId,
+        changes: { addClass: [classesToAdd] }
+    });
+}
