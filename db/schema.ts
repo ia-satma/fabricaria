@@ -64,3 +64,21 @@ export const analyticsEvents = pgTable("analytics_events", {
     agentId: uuid("agent_id").references(() => agents.id),
     createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const learnedPatterns = pgTable("learned_patterns", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    pattern: text("pattern").notNull(),
+    description: text("description"),
+    metadata: jsonb("metadata").default({}),
+    embedding: vector("embedding", { dimensions: 768 }),
+    createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const fabricationQueue = pgTable("fabrication_queue", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    jobId: text("job_id").notNull(),
+    status: text("status").notNull(),
+    payload: jsonb("payload").default({}),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+});

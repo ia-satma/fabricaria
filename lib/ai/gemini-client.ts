@@ -35,10 +35,15 @@ export class GeminiCacheManager {
      */
     static async countTokens(content: string): Promise<number> {
         try {
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+            // Hardening: Use stable gemini-1.5-pro to avoids 404s on flash models in some regions/versions
+            const modelName = "gemini-1.5-pro";
+            const model = genAI.getGenerativeModel({ model: modelName });
             const { totalTokens } = await model.countTokens(content);
             return totalTokens;
-        } catch (error) {
+        } catch (error: any) {
+            if (error.message?.includes("404") || error.message?.includes("not found")) {
+                console.error(`❌ [Gemini] Critical Error: Model not found or unsupported. Check API version/access.`);
+            }
             console.warn("⚠️ [Gemini] Token counting failed, defaulting to 0:", error);
             return 0;
         }
