@@ -1,1 +1,18 @@
-Usa siempre rutas relativas. No uses librerías externas sin permiso. Si encuentras un error de tipos, arréglalo automáticamente.
+# AGENT RULES 🤖
+
+## 🏗️ ESTRUCTURA (FSD Lite)
+- **OBLIGATORIO**: Toda la lógica de negocio debe residir en `features/<feature_name>/`.
+- **PROHIBIDO**: Crear archivos `index.ts` que solo actúen como re-exportadores (Barrel Files). Esto infla el contexto de la IA y causa alucinaciones. Usa importaciones directas.
+- **DETERMINISMO**: Las funciones de herramientas deben usar esquemas Zod para validación de entrada/salida.
+
+## 🛡️ SEGURIDAD (Aegis)
+- **CONFIANZA CERO**: Nunca ejecutes comandos destructivos sin validación manual o pre-vuelo de Aegis.
+- **PRIVACIDAD**: Usa `lib/security/sanitizer.ts` para limpiar PII de cualquier log o historial de chat.
+
+## 💰 ECONOMÍA (FinOps)
+- **TOKEN MANAGEMENT**: Prioriza `gemini-1.5-flash` para tareas mecánicas. Usa `gemini-1.5-pro` solo para razonamiento complejo o planeación.
+- **RAG vs CACHE**: Si un contexto se usa más de 2.5 veces por hora y supera los 500k tokens, propón la creación de un Cache Context para ahorrar costos.
+
+## 🎨 DISEÑO (Vibe-Master)
+- **AESTHETICS**: Sigue estrictamente Shadcn/UI y Tailwind. No inventes estilos ad-hoc.
+- **VISUAL QA**: Antes de dar por terminada una UI, verifica el resultado visual contra el diseño esperado.
