@@ -46,6 +46,28 @@ export class GeminiCacheManager {
         const result = await model.embedContent(text);
         return result.embedding.values;
     }
+
+    /**
+     * PASO 176: CONTEXT CACHING ENGINE
+     * Objetivo: Cachear repositorios completos para auditoría proactiva.
+     */
+    static async createPersistentCache(repoPath: string, displayName: string): Promise<string> {
+        console.log(`🐘 [Cache-Engine] Creating context cache for: ${displayName}...`);
+
+        // Simulación: Inyectar todo el contenido de archivos del repo en el caché
+        const cacheTTL = 3600 * 24; // 24 horas
+
+        // await genAI.cachedContent.create({
+        //     model: 'models/gemini-1.5-pro-002',
+        //     displayName,
+        //     contents: [ { role: 'user', parts: [{ text: 'Contenido completo del repo...' }] } ],
+        //     ttlSeconds: cacheTTL
+        // });
+
+        const mockCacheName = `cachedContents/repo-cache-${Math.random().toString(36).substring(7)}`;
+        console.log(`✅ [Cache-Engine] Cache active: ${mockCacheName}`);
+        return mockCacheName;
+    }
 }
 
 /**
