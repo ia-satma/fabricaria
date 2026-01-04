@@ -15,18 +15,19 @@ interface InjectionPayload {
     nix: string;
 }
 
+
 export async function injectBrain(payload: InjectionPayload) {
     console.log("🧠 [Crosis-Injection] Connecting to remote worker synapse...");
 
     const client = new Client();
 
     return new Promise((resolve, reject) => {
-        // Crosis requires a connection token obtained from the API
         client.open({
+            context: null, // Required by Crosis
             fetchConnectionMetadata: async () => {
                 return {
                     token: payload.token,
-                    g6Proxy: "https://g6-proxy.replit.com" // Standard Replit proxy
+                    g6Proxy: "https://g6-proxy.replit.com"
                 } as any;
             }
         }, (error) => {
@@ -38,41 +39,39 @@ export async function injectBrain(payload: InjectionPayload) {
             console.log("✅ [Crosis-Injection] Connection established.");
 
             // Open the files channel
-            const filesChannel = client.openChannel("files");
-
-            filesChannel.onCommand((cmd) => {
-                if (cmd.fileWriteAck) {
-                    console.log(`📄 [Crosis-Injection] Write Ack received for: ${cmd.fileWriteAck.path}`);
+            client.openChannel("files", (channel) => {
+                if (!channel) {
+                    return reject(new Error("Failed to open files channel"));
                 }
-            });
 
-            const filesToInject = [
-                { path: ".agent/rules", content: payload.rules },
-                { path: "AGENTS.md", content: payload.context },
-                { path: "replit.nix", content: payload.nix }
-            ];
-
-            // Sequence writes
-            let finishedCount = 0;
-            for (const file of filesToInject) {
-                console.log(`🖋️ [Crosis-Injection] Injecting: ${file.path}...`);
-                filesChannel.send({
-                    fileWrite: {
-                        path: file.path,
-                        content: Buffer.from(file.content)
+                channel.onCommand((cmd: any) => {
+                    if (cmd.fileWriteAck) {
+                        console.log(`📄 [Crosis-Injection] Write Ack received for: ${cmd.fileWriteAck.path}`);
                     }
                 });
-                finishedCount++;
-            }
 
-            if (finishedCount === filesToInject.length) {
-                console.log("🦾 [Crosis-Injection] Brain segments successfully transferred.");
-                // Graceful closure after small cooling period for Acks
+                const filesToInject = [
+                    { path: ".agent/rules", content: payload.rules },
+                    { path: "AGENTS.md", content: payload.context },
+                    { path: "replit.nix", content: payload.nix }
+                ];
+
+                for (const file of filesToInject) {
+                    console.log(`🖋️ [Crosis-Injection] Injecting: ${file.path}...`);
+                    channel.send({
+                        fileWrite: {
+                            path: file.path,
+                            content: Buffer.from(file.content)
+                        }
+                    });
+                }
+
+                console.log("🦾 [Crosis-Injection] Brain segments sent.");
                 setTimeout(() => {
                     client.close();
                     resolve(true);
                 }, 2000);
-            }
+            });
         });
     });
 }
