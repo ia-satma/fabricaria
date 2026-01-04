@@ -1,58 +1,29 @@
-# @Context: FABRICARIA OS 🏗️
-Autonomous Software Factory driven by a Pentarquía of specialized agents. Inspired by Japanese Kaizen and Zero Trust architectures.
+# AGENTS.md: EL GENOMA DEL PROYECTO 🧬
 
-# @CorporateOrganigrama (Pentarquía)
+## @Context
+**Objetivo de Negocio**: Construir una Pentarquía Agéntica soberana impulsada por Google Gemini para automatizar el ciclo de vida de desarrollo de software (Software Factory).
+**Restricciones de Dominio**: Confianza Cero (Zero Trust), Soberanía de Datos, FinOps Defensivo y Estética Industrial-Cibernética.
 
-## 🏢 1. STRATEGY & ARCHITECTURE (C-SUITE)
-- **ARCHITECT-ALPHA (CTO / Sovereign)**
-  - **Role**: Principal Orchestrator. Planning & Strategy.
-  - **Goal**: Generate `AGENTS.md` blueprints. NUNCA writes implementation code.
-  - **Modes**: Génesis, Kaizen, Diagnóstico, Evolución.
-- **MNEMOSYNE-KEEPER (CFO / Memory Economy)**
-  - **Role**: Token Economist & Semantic Router.
-  - **Goal**: Optimize RAG vs Context Caching ($2.00 vs $0.20 per 1M tokens).
-  - **Rule**: If freq > 2.5/hr -> PROMOTE TO CACHE.
-
-## 🔨 2. ENGINEERING & TOOLS (BUILDERS)
-- **NEXUS-BRIDGE (Integration Diplomat)**
-  - **Role**: MCP Protocol Specialist.
-  - **Goal**: Connect tools (SendGrid, Neon, GitHub) via JSON-RPC.
-  - **Rule**: Idempotency keys for all writes.
-- **THE CONSTRUCTOR (Gemini Flash Worker)**
-  - **Role**: High-speed implementation.
-  - **Goal**: Execute Architect blueprints using the Golden Stack.
-
-## 🛡️ 3. SECURITY & RISK (SECOPS)
-- **AEGIS-SENTINEL (CISO / Guardian)**
-  - **Role**: Deterministic Interceptor (SEP-1763).
-  - **Goal**: Block destructive commands (rm -rf, DROP TABLE).
-  - **Rule**: PII Scrubbing (Redaction) of all logs.
-- **SENTINEL WATCHDOG**
-  - **Role**: Physical Panic Switch.
-  - **Goal**: Halt rogue agents (>10 writes/min or >10MB logs).
-
-## 🎨 4. QUALITY & DESIGN (QA)
-- **VIBE-MASTER (Creative Director)**
-  - **Role**: Aesthetic Guardian.
-  - **Goal**: Enforce Shadcn/UI standards & Tailwind consistency.
-- **VISUAL QA AGENT**
-  - **Role**: Pixel-perfect auditor.
-  - **Goal**: Compare Figma (Expectation) vs Browser (Reality) using Gemini Vision.
-
-# @TechStack (The Golden Stack)
+## @TechStack
 - **Frontend**: Next.js 14+ (App Router), Tailwind CSS, Shadcn/UI.
-- **Backend/DB**: Neon Postgres (Serverless), Drizzle ORM.
-- **Logic**: TypeScript, Zod.
-- **Infra**: Replit Foundry / Google Antigravity.
+- **Backend/Logic**: TypeScript, Node.js.
+- **Base de Datos**: Neon Postgres (Serverless), Drizzle ORM, pgvector.
+- **AI/LLM**: Google Gemini 1.5 Pro/Flash, Gemini Vision, Thinking Models (Gemini 3).
+- **Security**: Aegis Interceptor, DLP Sanitizer, RLS Database Native.
+- **Infra**: Replit (Execution), GitHub (VCS), Crosis Protocol.
 
-# @OperationalModes
-1. **GÉNESIS**: Build from scratch. Evaluates 3 architectures via Tree-of-Thoughts.
-2. **KAIZEN**: Reconstruct/Optimize. Zero Legacy approach. Extract logic, rewrite clean.
-3. **DIAGNÓSTICO**: Root Cause Analysis. Fix for stability, not just patches.
-4. **EVOLUCIÓN**: Feature Expansion. Pull from GitHub/HuggingFace, sanitize, then integrate.
+## @Rules
+- **Naming**: Kebab-case para archivos y carpetas (`features/my-feature/my-component.tsx`). PascalCase para componentes React y Clases.
+- **Architecture**: FSD Lite (Feature-Sliced Design simplificado). Prohibidos los Barrel Files (`index.ts`).
+- **Data**: Primero el esquema (Zod Mandatory), luego la implementación (Schema-First).
+- **Audit**: Todo cambio debe ser validado por un Agente Crítico y documentado visualmente (Visual QA).
 
-# @Rules (Negative Constraints)
-- NO Barrel Files (index.ts).
-- NO 'use client' in pages.
-- NO destructive commands without Aegis approval.
-- NO unbuffered cost-blind calls.
+## @Memory
+- [2026-01-04] Implementado Circuit Breaker V2 para control de costos de Thinking Tokens.
+- [2026-01-04] Activado FSD Lite y eliminado ruido de exportaciones circulares.
+- [2026-01-04] Establecido protocolo de sanitización DLP para protección de PII.
+- [2026-01-04] Sistema de aprovisionamiento headless vía GraphQL y Crosis estabilizado.
+- [2026-01-04] Activado Kernel-Level RLS en todas las tablas críticas.
+
+---
+**Nota**: Antes de escribir, lee. Si una petición contradice este Genoma, recházala o pide actualización formal de la Constitución.
