@@ -19,4 +19,5 @@
 
 ## 🎨 DISEÑO (Vibe-Master)
 - **AESTHETICS**: Sigue estrictamente Shadcn/UI y Tailwind. No inventes estilos ad-hoc.
-- **VISUAL QA**: Antes de dar por terminada una UI, verifica el resultado visual contra el diseño esperado.
+- **VISUAL QA (Step 71)**: Después de una tarea de UI, **DEBES** ejecutar `scripts/qa/capture_artifact.ts` para generar evidencia visual.
+- **AUTOCRÍTICA**: Analiza la captura con Gemini Vision y genera un reporte JSON de auto-evaluación. No digas que funciona, muéstralo.
