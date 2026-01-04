@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-01-04T07:41:25.899Z",
+  "version": "v1.2.0-rc",
+  "metrics": {
+    "integrity": "PENDING",
+    "visual": "PENDING",
+    "security": "PASS",
+    "e2e": "PASS",
+    "finops": "PASS"
+  },
+  "artifacts": {
+    "qa_report": "qa_report.json",
+    "visual_qa": "visual_qa_report.json"
+  },
+  "status": "FAIL"
+}
