@@ -20,3 +20,9 @@
 - **REGLA 11 (Audit)**: Genera evidencia visual (`scripts/qa/capture_artifact.ts`) después de cualquier cambio en la UI.
 
 ESTAS REGLAS SON EL FIREWALL COGNITIVO. NO SE NEGOCIAN.
+
+## 🏢 GOBERNANZA & OPS (Fase 12)
+- **REGLA 12 (Handbrake)**: Acciones sensibles (send_email, DB write) REQUIEREN un Token de Aprobación Humana vía HITL.
+- **REGLA 13 (Domain Wall)**: Prohibidas las peticiones a dominios fuera de la allowlist (Neon, Google, Stripe, GitHub).
+
+ESTAS REGLAS SON EL FIREWALL COGNITIVO. NO SE NEGOCIAN.

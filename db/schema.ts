@@ -125,3 +125,13 @@ export const thoughtTraces = pgTable("thought_traces", {
     createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
+export const auditTrail = pgTable("audit_trail", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    prevHash: text("prev_hash"),
+    actionPayload: jsonb("action_payload").notNull(),
+    agentThought: text("agent_thought"),
+    currentHash: text("current_hash").notNull(),
+    timestamp: timestamp("timestamp").defaultNow(),
+    tenantId: uuid("tenant_id").references(() => tenants.id),
+});
+

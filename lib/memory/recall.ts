@@ -32,10 +32,22 @@ export async function recallSimilarContext(query: string, agentRole: string, lim
         const memories = results.rows.map((row: any) => ({
             content: row.content,
             role: row.agent_role,
-            distance: row.distance
+            distance: Number(row.distance)
         }));
 
-        console.log(`✅ [Memory-Recall] Found ${memories.length} relevant memories.`);
+        const maxScore = memories.length > 0 ? 1 - memories[0].distance : 0;
+        console.log(`✅ [Memory-Recall] Found ${memories.length} memories. Max Confidence Score: \${maxScore.toFixed(2)}`);
+
+        // HALLUCINATION DETECTOR (Step 87)
+        if (maxScore < 0.75) {
+            console.warn("🤥 [Hallucination-Alert] Low context similarity detected. Marking session as LOW_CONFIDENCE.");
+            memories.unshift({
+                content: "ADVERTENCIA: No tienes información suficiente confiable en memoria. Si no sabes la respuesta basándote en el código real, di 'No tengo datos suficientes', NO INVENTES.",
+                role: "SYSTEM_ALARM",
+                distance: 0
+            });
+        }
+
         return memories;
 
     } catch (error) {

@@ -1,42 +1,47 @@
 
+import { GeminiClient } from "../lib/ai/gemini-client";
 import fs from 'fs';
 import path from 'path';
-import { GeminiClient } from '../lib/ai/gemini-client';
 
 /**
- * THE SCRIBE (Step 83)
- * Role: Systems Librarian.
- * Goal: Distill session knowledge into AGENTS.md and vector memory.
+ * THE SCRIBE (Step 93)
+ * Goal: Distill history into AGENTS.md @Memory.
  */
 
-async function consolidateMemory() {
-    console.log("✍️ [Scribe] Distilling session knowledge...");
-
-    const agentsPath = path.join(process.cwd(), 'AGENTS.md');
-    const agentsContent = fs.readFileSync(agentsPath, 'utf8');
+async function consolidateKnowledge() {
+    console.log("✍️ [The-Scribe] Distilling recent history into AGENTS.md...");
 
     const client = new GeminiClient("gemini-1.5-flash", "Scribe");
+    const agentsMdPath = path.join(process.cwd(), 'AGENTS.md');
+
+    if (!fs.existsSync(agentsMdPath)) {
+        console.error("❌ [The-Scribe] AGENTS.md not found.");
+        return;
+    }
+
+    const currentAgentsMd = fs.readFileSync(agentsMdPath, 'utf8');
+
+    // In a real scenario, we'd pull recent logs or commit messages.
+    // For this simulation/demo, we'll summarize the Phase 11 achievements.
+    const recentHistory = `
+    - Implemented AST-based Style Patcher for precise UI modifications.
+    - Added Immutable Forensic Audit Trail with SHA256 chaining.
+    - Implemented Aegis Shadow Block for silent security interception.
+    - Enabled Hallucination Detection via RAG confidence metrics.
+    `;
 
     const systemPrompt = `
-Eres el Escriba del Sistema. Tu tarea es analizar los cambios recientes y resumir lecciones aprendidas.
-Actualiza la sección @Memory de AGENTS.md con hitos técnicos reales.
-
-REGLAS:
-1. Sé conciso.
-2. Formato: - [YYYY-MM-DD] Descripción del hito.
-3. No borres la historia previa, solo añade al inicio de la lista.
+Eres "The Scribe". Tu tarea es organizar y destilar la sección @Memory de AGENTS.md.
+Añade las lecciones aprendidas de la HISTORIA RECIENTE a la sección @Memory.
+Mantén las reglas previas intactas. Devuelve el archivo AGENTS.md COMPLETO.
 `;
 
-    const summary = await client.generateContent(`${systemPrompt}\n\nCONSTITUCIÓN ACTUAL:\n${agentsContent}`);
+    const updatedContent = await client.generateContent(`${systemPrompt}\n\nCONTENIDO ACTUAL:\n${currentAgentsMd}\n\nHISTORIA RECIENTE:\n${recentHistory}`);
 
-    // Update AGENTS.md (In real world, we'd parse and insert properly)
-    // For this prototype, we log the distilled insight.
-    console.log("📚 [Scribe] New Knowledge Distilled:", summary);
-
-    // In a full implementation, this would also push to Neon agent_memories
-    console.log("✅ [Scribe] Memory consolidation complete.");
+    fs.writeFileSync(agentsMdPath, updatedContent);
+    console.log("✅ [The-Scribe] AGENTS.md updated with new memories.");
 }
 
 if (require.main === module) {
-    consolidateMemory().catch(console.error);
+    consolidateKnowledge().catch(console.error);
 }

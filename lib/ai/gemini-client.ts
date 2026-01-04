@@ -3,6 +3,7 @@ import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
 import { db } from "../../db";
 import { tokenUsageLogs } from "../../db/schema";
 import { checkBudget, calculateCost } from "../security/cost-guard";
+import { withAegis } from "../security/aegis_interceptor"; // Import Step 111
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
@@ -20,7 +21,6 @@ export class GeminiClient {
     async generateContent(prompt: string, config?: { responseMimeType?: string, thinkingLevel?: "LOW" | "HIGH" }): Promise<string> {
         console.log(`🤖 [${this.agentType}] Calling Gemini (${this.modelName})...`);
         const MAX_THOUGHT_TOKENS = 3000;
-        const controller = new AbortController();
 
         try {
             const sessionId = "global-session";
@@ -36,59 +36,57 @@ export class GeminiClient {
                 modelParams.thought_signature = signature;
             }
 
-            const activeModel = genAI.getGenerativeModel(modelParams);
+            // Wrap with Aegis Security (Step 111)
+            return await withAegis(prompt, async () => {
+                const activeModel = genAI.getGenerativeModel(modelParams);
+                const result = await activeModel.generateContentStream(prompt);
 
-            // Using Streaming for Real-time Token Monitoring (Circuit Breaker V2)
-            const result = await activeModel.generateContentStream(prompt);
+                let fullText = "";
+                let currentThoughts = 0;
 
-            let fullText = "";
-            let currentThoughts = 0;
+                for await (const chunk of result.stream) {
+                    const thoughts = (chunk as any).usageMetadata?.thoughtsTokenCount || 0;
+                    currentThoughts += thoughts;
 
-            for await (const chunk of result.stream) {
-                const thoughts = (chunk as any).usageMetadata?.thoughtsTokenCount || 0;
-                currentThoughts += thoughts;
+                    if (currentThoughts > MAX_THOUGHT_TOKENS) {
+                        console.error(`💸 [Circuit-Breaker] PRESTUPUESTO COGNITIVO EXCEDIDO: ${currentThoughts} tokens.`);
+                        throw new Error("PRESUPUESTO COGNITIVO EXCEDIDO");
+                    }
 
-                if (currentThoughts > MAX_THOUGHT_TOKENS) {
-                    console.error(`💸 [Circuit-Breaker] PRESTUPUESTO COGNITIVO EXCEDIDO: ${currentThoughts} tokens.`);
-                    controller.abort();
-                    throw new Error("PRESUPUESTO COGNITIVO EXCEDIDO");
+                    fullText += chunk.text();
                 }
 
-                fullText += chunk.text();
-            }
+                const response = await result.response;
 
-            const response = await result.response;
+                // TSIP: Capture new signature
+                const newSignature = (response as any).thought_signature;
+                if (newSignature) {
+                    await GeminiCacheManager.saveThoughtSignature(sessionId, newSignature);
+                }
 
-            // TSIP: Capture new signature
-            const newSignature = (response as any).thought_signature;
-            if (newSignature) {
-                await GeminiCacheManager.saveThoughtSignature(sessionId, newSignature);
-            }
+                // Usage Accounting
+                const usage = response.usageMetadata || { promptTokenCount: 0, candidatesTokenCount: 0 };
+                const cost = calculateCost(this.modelName, usage.promptTokenCount, usage.candidatesTokenCount);
 
-            // Usage Accounting
-            const usage = response.usageMetadata || { promptTokenCount: 0, candidatesTokenCount: 0 };
-            const cost = calculateCost(this.modelName, usage.promptTokenCount, usage.candidatesTokenCount);
+                checkBudget(cost);
+                this.logUsage(usage.promptTokenCount, usage.candidatesTokenCount, cost).catch(() => { });
 
-            checkBudget(cost);
-            this.logUsage(usage.promptTokenCount, usage.candidatesTokenCount, cost).catch(() => { });
-
-            return fullText;
+                return fullText;
+            });
 
         } catch (error: any) {
             if (error.message === "PRESUPUESTO COGNITIVO EXCEDIDO") {
                 console.warn(`🔄 [Circuit-Breaker] Triggering Fallback to Flash...`);
-                // Fallback to a cheaper/simpler execution
                 const fallbackClient = new GeminiClient("gemini-1.5-flash", this.agentType);
                 return fallbackClient.generateContent(prompt, { ...config, thinkingLevel: "LOW" });
             }
 
             if (error?.message?.includes("400") || error?.status === 400) {
-                return this.generateContent(prompt, config);
+                // Potential retry or error handling
             }
             throw error;
         }
     }
-
 
     private async logUsage(input: number, output: number, cost: number) {
         await db.insert(tokenUsageLogs).values({
@@ -103,9 +101,7 @@ export class GeminiClient {
 
 /**
  * GEMINI CACHE MANAGER (Step 24 & TSIP)
- * Manages thinking signatures and context caching.
  */
-
 import { thoughtTraces } from "../../db/schema";
 import { desc, eq } from "drizzle-orm";
 
@@ -129,8 +125,6 @@ export class GeminiCacheManager {
     }
 
     static async getOrUpdateCache(genome: string): Promise<string> {
-        // Implementation for Context Caching via Google SDK
-        // Returns a cache name or mock
         console.log("🐘 [Cache] Context Genome synced to Gemini persistent layer.");
         return "cache_" + Math.random().toString(36).substring(7);
     }

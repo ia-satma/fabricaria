@@ -44,7 +44,23 @@ export async function validateAction(command: string, tenantId?: string) {
 /**
  * TOOL MIDDLEWARE: Wraps execution to enforce Aegis
  */
+const NETWORK_ALLOWLIST = ['api.openai.com', 'github.com', 'googleapis.com', 'stripe.com', 'neon.tech'];
+
 export async function withAegis(command: string, action: () => Promise<any>, tenantId?: string) {
     await validateAction(command, tenantId);
+
+    // Network Allowlist Check (Step 111)
+    if (command.includes('http')) {
+        const urlMatch = command.match(/https?:\/\/([^/]+)/);
+        if (urlMatch) {
+            const domain = urlMatch[1];
+            const isAllowed = NETWORK_ALLOWLIST.some(allowed => domain.endsWith(allowed));
+            if (!isAllowed) {
+                console.error(`🛡️ [Aegis-Network] BLOCKED: Unauthorized domain ${domain}`);
+                throw new Error(`AegisNetworkBlock: Domain ${domain} is NOT in the allowlist.`);
+            }
+        }
+    }
+
     return await action();
 }
