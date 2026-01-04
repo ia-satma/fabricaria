@@ -27,13 +27,27 @@ const IGNORED_ENTRIES = [
     "package.json",
     "package-lock.json",
     "tsconfig.json",
+    "next.config.js",
     "next.config.mjs",
+    "postcss.config.js",
     "postcss.config.mjs",
     "tailwind.config.ts",
     "README.md",
     "AGENTS.md",
     "drizzle.config.ts",
-    ".env"
+    ".env",
+    ".env.example",
+    "pnpm-lock.yaml",
+    "next-env.d.ts",
+    "attached_assets",
+    "vision_audit_test.png",
+    "audit_report.json",
+    ".git_backup",
+    ".agent",
+    ".gitignore",
+    "replit.md",
+    "server.log",
+    "tsconfig.tsbuildinfo"
 ];
 
 function validateFSD() {

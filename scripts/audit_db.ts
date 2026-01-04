@@ -26,7 +26,7 @@ async function main() {
 
     try {
         // raw query for count
-        const result = await db.execute(sql`SELECT count(*) FROM learned_patterns`);
+        const result = (await db.execute(sql`SELECT count(*) FROM learned_patterns`)) as any;
         console.log('Learned patterns count:', result[0]?.count || result[0]);
         console.log('DB Audit: Connection Successful');
     } catch (error) {
