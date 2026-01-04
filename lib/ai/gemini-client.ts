@@ -49,8 +49,8 @@ export class GeminiClient {
                     currentThoughts += thoughts;
 
                     if (currentThoughts > MAX_THOUGHT_TOKENS) {
-                        console.error(`💸 [Circuit-Breaker] PRESTUPUESTO COGNITIVO EXCEDIDO: ${currentThoughts} tokens.`);
-                        throw new Error("PRESUPUESTO COGNITIVO EXCEDIDO");
+                        console.error(`💸 [Circuit-Breaker] THOUGHT BUDGET EXCEEDED: ${currentThoughts} tokens.`);
+                        throw new Error("THOUGHT_BUDGET_EXCEEDED");
                     }
 
                     fullText += chunk.text();
@@ -75,8 +75,8 @@ export class GeminiClient {
             });
 
         } catch (error: any) {
-            if (error.message === "PRESUPUESTO COGNITIVO EXCEDIDO") {
-                console.warn(`🔄 [Circuit-Breaker] Triggering Fallback to Flash...`);
+            if (error.message === "THOUGHT_BUDGET_EXCEEDED") {
+                console.warn(`🔄 [Circuit-Breaker] Falling back to Flash (Thinking: LOW)...`);
                 const fallbackClient = new GeminiClient("gemini-1.5-flash", this.agentType);
                 return fallbackClient.generateContent(prompt, { ...config, thinkingLevel: "LOW" });
             }
