@@ -39,10 +39,12 @@ export async function injectBrain(payload: InjectionPayload) {
             console.log("✅ [Crosis-Injection] Connection established.");
 
             // Open the files channel
-            client.openChannel("files", (channel) => {
-                if (!channel) {
+            client.openChannel({ service: "files" }, (result) => {
+                if (!result || !result.channel) {
                     return reject(new Error("Failed to open files channel"));
                 }
+
+                const channel = result.channel;
 
                 channel.onCommand((cmd: any) => {
                     if (cmd.fileWriteAck) {
@@ -63,7 +65,7 @@ export async function injectBrain(payload: InjectionPayload) {
                             path: file.path,
                             content: Buffer.from(file.content)
                         }
-                    });
+                    } as any);
                 }
 
                 console.log("🦾 [Crosis-Injection] Brain segments sent.");
