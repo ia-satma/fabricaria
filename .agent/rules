@@ -5,6 +5,10 @@
 - **PROHIBIDO**: Crear archivos `index.ts` que solo actúen como re-exportadores (Barrel Files). Esto infla el contexto de la IA y causa alucinaciones. Usa importaciones directas.
 - **DETERMINISMO**: Las funciones de herramientas deben usar esquemas Zod para validación de entrada/salida.
 
+## 📜 SCHEMA-FIRST (Zod Mandate)
+- **GLOBO DE ORO**: Antes de generar cualquier componente de UI o Endpoint de API, **DEBES** generar primero el esquema Zod de los datos.
+- **GROUNDING**: Zod actúa como "tierra firme" para el modelo. Primero define la verdad de los datos en `schemas/` o dentro del directorio de la feature.
+
 ## 🛡️ SEGURIDAD (Aegis)
 - **CONFIANZA CERO**: Nunca ejecutes comandos destructivos sin validación manual o pre-vuelo de Aegis.
 - **PRIVACIDAD**: Usa `lib/security/sanitizer.ts` para limpiar PII de cualquier log o historial de chat.
