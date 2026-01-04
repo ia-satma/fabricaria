@@ -33,16 +33,13 @@ export async function applyVisualPatch(input: VisualPatchInput) {
 
     for (const element of allElements) {
         const attributes = element.getAttributes();
-        const hasTarget = attributes.some(attr => {
-            if (attr.getKind() === SyntaxKind.JsxAttribute) {
-                const name = (attr as any).getName();
-                const value = (attr as any).getInitializer()?.getText()?.replace(/['"]/g, '');
-                return (name === 'data-testid' || name === 'id') && value === input.targetId;
-            }
-            return false;
-        });
+        const testIdAttr = attributes.find(a => (a as any).getName() === 'data-testid');
+        const idAttr = attributes.find(a => (a as any).getName() === 'id');
 
-        if (hasTarget) {
+        const value = testIdAttr?.getInitializer()?.getText()?.replace(/['"]/g, '') ||
+            idAttr?.getInitializer()?.getText()?.replace(/['"]/g, '');
+
+        if (value === input.targetId) {
             targetNode = element;
             break;
         }

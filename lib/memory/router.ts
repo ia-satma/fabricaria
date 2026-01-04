@@ -1,35 +1,35 @@
 
 /**
- * PASO 165: EL CEREBRO ECONÓMICO (Semantic Router V2)
- * Objetivo: Automatizar la decisión de Caché vs RAG usando N_eq.
+ * PASO 194: EL ROUTER SEMÁNTICO MATEMÁTICO (Neq ≈ 2.5)
+ * Objetivo: Decidir si usar Context Cache (Hot) o RAG/Neon (Cold).
  */
 
-export interface RouterDecision {
-    tier: 'HOT_CACHE' | 'COLD_RAG';
+export interface RoutingDecision {
+    tier: 'HOT' | 'COLD';
     reason: string;
 }
 
-export const NEQ_THRESHOLD = 2.5; // Consultas por hora de equilibrio
+export class SemanticRouter {
+    // Neq = (R_ratio * C_in - C_cache_in) / C_store
+    // Para Gemini 1.5 Pro, Neq ≈ 2.5 consultas/hora
+    private static NEQ_THRESHOLD = 2.5;
 
-export function routeCognitiveContext(stats: {
-    session_velocity: number,
-    context_size: number
-}): RouterDecision {
-    console.log(`🧮 [Router-V2] Analyzing cognitive request: Velocity=${stats.session_velocity}, Size=${stats.context_size}`);
+    /**
+     * Evalúa si una sesión debe ser promocionada a Caché de Contexto.
+     */
+    static decideTier(queriesPerHour: number, contextSizeTokens: number): RoutingDecision {
+        console.log(`🧮 [Router-Semántico] Evaluando velocidad: ${queriesPerHour} q/h | Tamaño: ${contextSizeTokens} tokens`);
 
-    // N_eq formula conceptual integration
-    const isProfitable = stats.session_velocity > NEQ_THRESHOLD;
-    const isLargeContext = stats.context_size > 1_000_000;
+        if (queriesPerHour >= this.NEQ_THRESHOLD) {
+            return {
+                tier: 'HOT',
+                reason: `Velocidad ${queriesPerHour} >= ${this.NEQ_THRESHOLD}. Es económicamente rentable usar Context Caching.`
+            };
+        }
 
-    if (isProfitable && isLargeContext) {
         return {
-            tier: 'HOT_CACHE',
-            reason: `Efficiency gain: velocity ${stats.session_velocity} > ${NEQ_THRESHOLD} with large context.`
+            tier: 'COLD',
+            reason: `Velocidad ${queriesPerHour} < ${this.NEQ_THRESHOLD}. Mejor usar RAG sobre Neon para ahorrar costos de almacenamiento.`
         };
     }
-
-    return {
-        tier: 'COLD_RAG',
-        reason: isProfitable ? "Context too small for cache ROI." : "Velocity too low for cache subscription cost."
-    };
 }

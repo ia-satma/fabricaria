@@ -49,7 +49,18 @@ export const aegisInterceptor = {
     }
 };
 
+import { AegisV3Interceptor } from "./aegis_v3";
+
 export function withSEP1763Interceptor(client: any) {
     console.log("👮 [Aegis] Wrapping client with SEP-1763 compliance layer.");
+
+    const originalCall = client.call_tool;
+    if (originalCall) {
+        client.call_tool = async (args: any) => {
+            await AegisV3Interceptor.validateTool(args.tool, args.arguments);
+            return originalCall(args);
+        };
+    }
+
     return client;
 }

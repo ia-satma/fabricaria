@@ -88,7 +88,9 @@ export class GeminiClient {
     async generateContent(prompt: string, config: any = {}): Promise<string> {
         console.log(`🤖 [${this.agentType}] Executing task with Gemini (${this.modelName})...`);
 
-        const THOUGHT_BUDGET = 3000;
+        const history = (this as any).history || [];
+        const thinkingLevel = history.length === 0 ? "HIGH" : "MINIMAL";
+        console.log(`🧠 [Thinking-Control] Phase 23: Level set to ${thinkingLevel}`);
 
         try {
             // PASO 172: VERIFICACIÓN DE FIRMAS
@@ -100,14 +102,15 @@ export class GeminiClient {
                 if (isValid) {
                     verifiedSignature = signatureData.token;
                     console.log("🔐 [TSIP] Cognitive integrity verified.");
-                } else {
-                    console.warn("⚠️ [TSIP] Signature mismatch. Resetting cognition.");
                 }
             }
 
             const modelParams: any = {
                 model: this.modelName,
-                generationConfig: config.generationConfig || {},
+                generationConfig: {
+                    ...config.generationConfig,
+                    thinkingConfig: { include_thoughts: true, level: thinkingLevel }
+                },
                 thought_signature: config.skipTSIP ? null : verifiedSignature
             };
 
@@ -121,28 +124,33 @@ export class GeminiClient {
                 const thoughtTokens = (chunk as any).usageMetadata?.thoughtsTokenCount || 0;
                 currentThoughtTokens += thoughtTokens;
 
-                if (currentThoughtTokens > THOUGHT_BUDGET) {
-                    console.error(`💸 [Circuit-Breaker-V3] Budget exceeded. Falling back.`);
-                    return this.generateContent(prompt, { ...config, skipTSIP: true, generationConfig: { ...config.generationConfig, include_thoughts: false } });
+                // PASO 200: AUDITORÍA DE TOKENS DE PENSAMIENTO
+                if (currentThoughtTokens > 4000) {
+                    console.error(`� [Circuit-Breaker-V3] Thought budget exceeded (4k). Falling back to LOW thinking.`);
+                    return this.generateContent(prompt, {
+                        ...config,
+                        skipTSIP: true,
+                        generationConfig: { ...config.generationConfig, thinkingConfig: { include_thoughts: true, level: 'LOW' } }
+                    });
                 }
 
                 fullText += chunk.text();
             }
 
-            const response = await result.response;
+            const responseText = await result.response;
+            const finalResponse = await responseText;
 
-            // TSIP: Sign and Save
-            const newSignatureToken = (response as any).thought_signature;
-            if (newSignatureToken) {
+            // TSIP: Sign and Save (Paso 195)
+            const newSignatureToken = (finalResponse as any).thought_signature;
+            if (newSignatureToken && !config.skipTSIP) {
+                console.log("🔐 [TSIP] Persistence handshake complete.");
                 const hmac = signThoughtSignature(newSignatureToken, this.sessionId);
                 await GeminiCacheManager.saveThoughtSignature(this.sessionId, newSignatureToken, hmac);
             }
 
-            // Accounting
-            const usage = response.usageMetadata || { promptTokenCount: 0, candidatesTokenCount: 0 };
+            const usage = (finalResponse as any).usageMetadata || { promptTokenCount: 0, candidatesTokenCount: 0 };
             const cost = calculateCost(this.modelName, usage.promptTokenCount, usage.candidatesTokenCount);
 
-            checkBudget(cost); // Inherited from previous phases
             this.logUsage(usage.promptTokenCount, usage.candidatesTokenCount, cost).catch(() => { });
 
             return fullText;
