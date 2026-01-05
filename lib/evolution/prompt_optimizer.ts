@@ -13,14 +13,19 @@ export class PromptOptimizer {
     async logAchievement(task: string, decision: string) {
         console.log(`📝 [Prompt-Optimizer] Recording achievement: ${task}`);
 
-        const currentContent = fs.existsSync(this.agentsPath)
-            ? fs.readFileSync(this.agentsPath, 'utf8')
-            : "# AGENTS.md\n\n## Memoria del Proyecto\n";
-
         const update = `\n- **Hito**: ${task}\n- **Decisión**: ${decision}\n- **Fecha**: ${new Date().toISOString()}\n`;
 
         fs.appendFileSync(this.agentsPath, update);
         console.log("✅ [Prompt-Optimizer] AGENTS.md updated.");
+    }
+
+    async logAntiPattern(failure: string, constraint: string) {
+        console.log(`⚠️ [Prompt-Optimizer] Recording anti-pattern: ${failure}`);
+
+        const update = `\n- **FALLO DETECTADO**: ${failure}\n- **NUEVA REGLA (CONSTRAIN)**: ${constraint}\n- **Fecha**: ${new Date().toISOString()}\n`;
+
+        fs.appendFileSync(this.agentsPath, update);
+        console.log("🚫 [Prompt-Optimizer] AGENTS.md updated with protective rule.");
     }
 
     async getOptimizedContext(): Promise<string> {

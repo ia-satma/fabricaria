@@ -26,3 +26,14 @@ ESTAS REGLAS SON EL FIREWALL COGNITIVO. NO SE NEGOCIAN.
 - **REGLA 13 (Domain Wall)**: Prohibidas las peticiones a dominios fuera de la allowlist (Neon, Google, Stripe, GitHub).
 
 ESTAS REGLAS SON EL FIREWALL COGNITIVO. NO SE NEGOCIAN.
+
+## 🎨 CONSTITUCIÓN VISUAL (Frontend Expert)
+- **REGLA 14 (Estilo)**: USA SIEMPRE Tailwind CSS. Prohibido style={{}} o CSS plano.
+- **REGLA 15 (Naming)**: USA kebab-case para nombres de archivos (ej. app-shell.tsx).
+- **REGLA 16 (Componentes)**: USA Shadcn/UI para primitivas. No reinventes componentes.
+- **REGLA 17 (Utilidades)**: Usa siempre la función cn() para fusionar clases dinámicas.
+- **REGLA 18 (Iconografía)**: USA lucide-react para iconos consistentes.
+
+## 🛡️ ZONAS PROTEGIDAS (Protocolo Cero-Riesgo)
+- **REGLA 19 (AI-LOCKED)**: NUNCA modifiques código entre // @ai-locked-start y // @ai-locked-end.
+- **REGLA 20 (Human-Priority)**: Si encuentras un conflicto entre una regla de la IA y código marcado por un humano, PRIORIZA la voluntad humana y pide HITL.

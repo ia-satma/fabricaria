@@ -115,7 +115,10 @@ export class GeminiClient {
             };
 
             const activeModel = genAI.getGenerativeModel(modelParams);
-            const result = await activeModel.generateContentStream(prompt);
+            // PASO 285: PODA DE TOKENS (Context Pruning)
+            const prunedPrompt = this.pruneContext(prompt);
+
+            const result = await activeModel.generateContentStream(prunedPrompt);
 
             let fullText = "";
             let currentThoughtTokens = 0;
@@ -162,15 +165,23 @@ export class GeminiClient {
     }
 
     static async hybridTieredExecute(plannerPrompt: string, executorPrompt: string) {
-        console.log("🏗️ [Hybrid-Brain] Initializing Architect (Pro)...");
+        console.log("🏗️ [Hybrid-Brain] Phase 26: Initializing Architect (Pro) | HIGH thinking...");
         const architect = new GeminiClient("gemini-1.5-pro", "ARCHITECT");
 
-        const planJson = await architect.generateContent(`${plannerPrompt}\nResponde SOLO con un JSON detallado.`);
+        // PASO 232: TRANSMUTACIÓN DE PENSAMIENTO
+        // Forzamos al Arquitecto a generar un artefacto JSON limpio
+        const planJson = await architect.generateContent(`${plannerPrompt}\nResponde EXCLUSIVAMENTE con un JSON detallado que sirva de artefacto para el Constructor.`, {
+            generationConfig: { thinkingConfig: { include_thoughts: true, level: 'HIGH' } }
+        });
 
-        console.log("⚡ [Hybrid-Brain] Initializing Builder (Flash)...");
+        console.log("⚡ [Hybrid-Brain] Phase 26: Initializing Builder (Flash) | MINIMAL thinking...");
         const builder = new GeminiClient("gemini-1.5-flash", "BUILDER");
 
-        return await builder.generateContent(`${executorPrompt}\nPLAN:\n${planJson}`, { skipTSIP: true });
+        // El Constructor ignora la firma incompatible y ejecuta rápido
+        return await builder.generateContent(`${executorPrompt}\nARTIFACT_PLAN:\n${planJson}`, {
+            skipTSIP: true,
+            generationConfig: { thinkingConfig: { include_thoughts: false, level: 'MINIMAL' } }
+        });
     }
 
     private async logUsage(input: number, output: number, cost: number) {
@@ -183,12 +194,29 @@ export class GeminiClient {
         });
     }
 
-    /**
-     * PASO 176: CONTEXT CACHING ENGINE
-     */
-    static async createPersistentCache(repoPath: string, displayName: string): Promise<string> {
-        console.log(`🐘 [Cache-Engine] Creating context cache for: ${displayName}...`);
-        const mockCacheName = `cachedContents/repo-cache-${Math.random().toString(36).substring(7)}`;
-        return mockCacheName;
+    async visionAudit(imageBuffer: Buffer, prompt: string): Promise<string> {
+        console.log(`👁️ [Vision-Audit] Analyzing visual artifact with Gemini Flash...`);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const result = await model.generateContent([
+            prompt,
+            {
+                inlineData: {
+                    data: imageBuffer.toString("base64"),
+                    mimeType: "image/png"
+                }
+            }
+        ]);
+
+        return result.response.text();
+    }
+
+    private pruneContext(prompt: string): string {
+        console.log("✂️ [Pruning] Phase 37: Trimming context for cost efficiency.");
+        // Implementación básica: Resumir si es muy largo o eliminar redundancias
+        if (prompt.length > 50000) {
+            return prompt.substring(0, 10000) + "\n... [CONTEXT_PRUNED] ...\n" + prompt.slice(-10000);
+        }
+        return prompt;
     }
 }

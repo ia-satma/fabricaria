@@ -100,20 +100,21 @@ export const securityLogs = pgTable("security_logs", {
     actionType: text("action_type").notNull(),
     payload: jsonb("payload").notNull(),
     reason: text("reason").notNull(),
-    severity: text("severity").default("high"), // 'low', 'medium', 'high', 'critical'
-    tenantId: uuid("tenant_id").references(() => tenants.id), // RLS Step 26
+    severity: text("severity").default("high"),
+    tenantId: uuid("tenant_id").references(() => tenants.id),
+    traceId: text("trace_id"),
     createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const tokenUsageLogs = pgTable("token_usage_logs", {
     id: uuid("id").primaryKey().defaultRandom(),
-    agentType: text("agent_type").notNull(), // 'RESEARCH', 'CODER', 'QA'
+    agentType: text("agent_type").notNull(),
     model: text("model").notNull(),
     inputTokens: integer("input_tokens").notNull(),
     outputTokens: integer("output_tokens").notNull(),
-    costUsd: text("cost_usd").notNull(), // Store as text to avoid float precision issues, or decimal
+    costUsd: text("cost_usd").notNull(),
     contextHash: text("context_hash"),
-    tenantId: uuid("tenant_id").references(() => tenants.id), // RLS Step 26
+    tenantId: uuid("tenant_id").references(() => tenants.id),
     createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -127,11 +128,47 @@ export const thoughtTraces = pgTable("thought_traces", {
 
 export const auditTrail = pgTable("audit_trail", {
     id: uuid("id").primaryKey().defaultRandom(),
-    prevHash: text("prev_hash"),
-    actionPayload: jsonb("action_payload").notNull(),
-    agentThought: text("agent_thought"),
-    currentHash: text("current_hash").notNull(),
-    timestamp: timestamp("timestamp").defaultNow(),
+    action: text("action").notNull(),
+    actor: text("actor").notNull(),
+    payload: text("payload").notNull(),
+    hash: text("hash").notNull(),
+    previousHash: text("previous_hash").notNull(),
+    traceId: text("trace_id"),
     tenantId: uuid("tenant_id").references(() => tenants.id),
+    createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const tenantKeys = pgTable("tenant_keys", {
+    tenantId: uuid("tenant_id").primaryKey().references(() => tenants.id),
+    secretKey: text("secret_key").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const knowledgeNodes = pgTable("knowledge_nodes", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: text("name").notNull(),
+    type: text("type").notNull(), // 'service', 'database', 'module', 'concept'
+    description: text("description"),
+    embedding: vector("embedding", { dimensions: 768 }),
+    tenantId: uuid("tenant_id").references(() => tenants.id),
+    createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const knowledgeEdges = pgTable("knowledge_edges", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    sourceId: uuid("source_id").notNull().references(() => knowledgeNodes.id),
+    targetId: uuid("target_id").notNull().references(() => knowledgeNodes.id),
+    relationType: text("relation_type").notNull(),
+    tenantId: uuid("tenant_id").references(() => tenants.id),
+    createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const projectLedger = pgTable("project_ledger", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: text("project_id").notNull(),
+    creditBalance: text("credit_balance").notNull().default("10.00"), // Store as decimal string
+    totalSpent: text("total_spent").notNull().default("0.00"),
+    tenantId: uuid("tenant_id").references(() => tenants.id),
+    updatedAt: timestamp("updated_at").defaultNow(),
 });
 

@@ -1,34 +1,44 @@
 
 "use server";
 
-import { db } from "../../db";
-import { tokenUsageLogs } from "../../db/schema";
-import { sql } from "drizzle-orm";
+import { db } from "@/db";
+import { tokenUsageLogs, auditTrail } from "@/db/schema";
+import { sql, desc } from "drizzle-orm";
+import { DashboardDataSchema } from "@/schemas/dashboard";
 
-export async function fetchTotalCostAction(): Promise<string> {
+/**
+ * PASO 311: IMPLEMENTACIÓN DE "SERVER ACTIONS" (Tubería Directa)
+ * Objetivo: Reducir la superficie de error agéntica.
+ */
+
+export async function fetchDashboardMetrics() {
+    console.log("🧠 [Server-Action] Fetching neuron-synchronized metrics...");
+
     try {
-        const result = await db.select({
-            total: sql<string>`sum(cast(cost_usd as decimal))`
+        // 1. Calcular gasto total (FinOps)
+        const costResult = await db.select({
+            total: sql<string>`SUM(CAST(cost_usd AS DECIMAL))`
         }).from(tokenUsageLogs);
 
-        const totalCost = result[0]?.total || "0.0000";
-        return parseFloat(totalCost).toFixed(4);
-    } catch (error) {
-        console.error("Failed to fetch total cost:", error);
-        return "0.0000";
+        // 2. Contar acciones de auditoría (Seguridad)
+        const auditCount = await db.select({
+            count: sql<number>`count(*)`
+        }).from(auditTrail);
+
+        // 3. Estructurar data según el Contrato (Zod)
+        const data = {
+            metrics: [
+                { label: "Gasto Total", value: `$${Number(costResult[0]?.total || 0).toFixed(2)}`, trend: "up" },
+                { label: "Alertas Aegis", value: auditCount[0]?.count || 0, trend: "neutral" },
+                { label: "Estado Swarm", value: "ACTIVO", trend: "neutral" }
+            ],
+            lastUpdate: new Date().toISOString()
+        };
+
+        // PASO 312: Validación del contrato antes de enviar
+        return DashboardDataSchema.parse(data);
+    } catch (e) {
+        console.error("❌ [Server-Action] Data fetch failed:", e);
+        throw new Error("DASHBOARD_FETCH_ERROR");
     }
-}
-
-export async function getDashboardMetrics() {
-    // In a real system, these would be calculated from real-time logs/DB
-    // For this hardened agent, we calculate it from fabrication queue and token logs.
-    const completedCount = (await db.execute(sql`SELECT count(*) FROM fabrication_queue WHERE status = 'completed'`)) as any;
-    const workerCount = 4; // Simulated active worker processes
-
-    return {
-        totalOutput: Number(completedCount[0]?.count || 0),
-        activeWorkers: workerCount,
-        uptimePercent: 99.9,
-        errorRate: 1.2
-    };
 }

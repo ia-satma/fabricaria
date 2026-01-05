@@ -10,26 +10,36 @@ export interface RoutingDecision {
 }
 
 export class SemanticRouter {
-    // Neq = (R_ratio * C_in - C_cache_in) / C_store
-    // Para Gemini 1.5 Pro, Neq ≈ 2.5 consultas/hora
-    private static NEQ_THRESHOLD = 2.5;
+    /**
+     * PASO 231: FÓRMULA DE EQUILIBRIO (N_eq)
+     * R_ratio: Ratio de reducción de latencia (ej. 0.8)
+     * C_in: Costo de entrada normal per session
+     * C_cache_in: Costo de activar el caché (write cost)
+     * C_store: Costo de almacenamiento por hora
+     */
+    static calculateNeq(rRatio: number, costIn: number, costCacheIn: number, costStore: number): number {
+        return (rRatio * costIn - costCacheIn) / costStore;
+    }
 
     /**
      * Evalúa si una sesión debe ser promocionada a Caché de Contexto.
+     * N_eq ≈ 2.5 consultas/hora para Gemini 1.5 Pro.
      */
-    static decideTier(queriesPerHour: number, contextSizeTokens: number): RoutingDecision {
-        console.log(`🧮 [Router-Semántico] Evaluando velocidad: ${queriesPerHour} q/h | Tamaño: ${contextSizeTokens} tokens`);
+    static decideTier(queriesPerHour: number): RoutingDecision {
+        // Valores promedio industriales para Gemini 1.5 Pro
+        const nEq = this.calculateNeq(0.8, 1.25, 0.5, 0.2);
+        console.log(`🧮 [Router-Semántico] Calculando N_eq: ${nEq.toFixed(2)} | Actual: ${queriesPerHour} q/h`);
 
-        if (queriesPerHour >= this.NEQ_THRESHOLD) {
+        if (queriesPerHour >= nEq) {
             return {
                 tier: 'HOT',
-                reason: `Velocidad ${queriesPerHour} >= ${this.NEQ_THRESHOLD}. Es económicamente rentable usar Context Caching.`
+                reason: `Eficiencia económica: ${queriesPerHour} >= N_eq (${nEq.toFixed(2)}). Promocionando a Context Caching.`
             };
         }
 
         return {
             tier: 'COLD',
-            reason: `Velocidad ${queriesPerHour} < ${this.NEQ_THRESHOLD}. Mejor usar RAG sobre Neon para ahorrar costos de almacenamiento.`
+            reason: `Eficiencia económica: ${queriesPerHour} < N_eq (${nEq.toFixed(2)}). Manteniendo en Cold Storage (Neon pgvector).`
         };
     }
 }
