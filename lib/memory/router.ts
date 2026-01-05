@@ -11,35 +11,48 @@ export interface RoutingDecision {
 
 export class SemanticRouter {
     /**
-     * PASO 321: EL ALGORITMO DE EQUILIBRIO (N_eq)
-     * R_ratio: Ratio de reducción de latencia
-     * C_in: Costo de entrada normal
-     * C_cache_in: Costo de activar el caché (write cost)
-     * C_store: Costo de almacenamiento por hora
+     * PASO 345: CLASIFICADOR DE INTENCIÓN (Semantic Router)
+     * Decide si la tarea requiere ver todo el contexto (Cache) o solo fragmentos (RAG).
      */
-    static calculateNeq(rRatio: number, costIn: number, costCacheIn: number, costStore: number): number {
-        // N_eq = (R_ratio * C_in - C_cache_in) / C_store
-        return (rRatio * costIn - costCacheIn) / costStore;
+    static async classifyIntent(prompt: string, client: any): Promise<'CACHE' | 'RAG'> {
+        console.log("🚦 [Semantic-Router] Step 345: Classifying intent with Gemini Flash...");
+
+        const classificationPrompt = `
+            Clasifica la siguiente consulta para optimización de memoria.
+            RESPUESTA EXCLUSIVA: "CACHE" o "RAG".
+            
+            - Usa "CACHE" si la consulta requiere contexto global, resumen de archivos largos, o auditoría estructural.
+            - Usa "RAG" si la consulta es específica, busca un dato puntual, o pregunta sobre una fecha/valor concreto.
+            
+            CONSULTA: "${prompt}"
+        `;
+
+        const result = await client.generateContent(classificationPrompt);
+        const intent = result.trim().toUpperCase();
+
+        return intent === 'CACHE' ? 'CACHE' : 'RAG';
     }
 
     /**
      * Evalúa si una sesión debe ser promocionada a Caché de Contexto.
      * N_eq ≈ 2.5 consultas/hora para Gemini 1.5 Pro.
      */
-    static decideTier(queriesPerHour: number): RoutingDecision {
+    static async decideTier(prompt: string, queriesPerHour: number, client: any): Promise<RoutingDecision> {
+        const intent = await this.classifyIntent(prompt, client);
         const threshold = 2.5;
-        console.log(`🧮 [Router-Semántico] Threshold N_eq: ${threshold} | Requerido q/h: ${queriesPerHour}`);
 
-        if (queriesPerHour >= threshold) {
+        console.log(`🧮 [Router-Semántico] Intent: ${intent} | queries/h: ${queriesPerHour} | Neq: ${threshold}`);
+
+        if (intent === 'CACHE' && queriesPerHour >= threshold) {
             return {
                 tier: 'HOT',
-                reason: `Eficiencia económica: ${queriesPerHour} >= ${threshold} q/h. Promocionando a Context Caching.`
+                reason: `INTENT_CACHE + Neq_HIT: ${queriesPerHour} >= ${threshold} q/h. Promocionando a Context Caching.`
             };
         }
 
         return {
             tier: 'COLD',
-            reason: `Eficiencia económica: ${queriesPerHour} < ${threshold} q/h. Manteniendo en Cold Storage (pgvector).`
+            reason: `INTENT_${intent}: Manteniendo en Cold Storage (pgvector) para eficiencia de costo.`
         };
     }
 }

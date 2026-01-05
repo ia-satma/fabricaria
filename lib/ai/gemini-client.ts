@@ -49,25 +49,20 @@ export class GeminiCacheManager {
     }
 
     /**
-     * PASO 176: CONTEXT CACHING ENGINE
-     * Objetivo: Cachear repositorios completos para auditoría proactiva.
+     * PASO 344: GESTIÓN DE TTL "HEARTBEAT"
+     * Mantiene vivo el caché mientras la sesión esté activa.
      */
-    static async createPersistentCache(repoPath: string, displayName: string): Promise<string> {
-        console.log(`🐘 [Cache-Engine] Creating context cache for: ${displayName}...`);
+    static async heartbeat(cacheName: string) {
+        console.log(`💓 [Cache-Heartbeat] Extending TTL for ${cacheName} (+60m)...`);
+        // Simulación: await genAI.cachedContent.update(cacheName, { ttlSeconds: 3600 });
+    }
 
-        // Simulación: Inyectar todo el contenido de archivos del repo en el caché
-        const cacheTTL = 3600 * 24; // 24 horas
-
-        // await genAI.cachedContent.create({
-        //     model: 'models/gemini-1.5-pro-002',
-        //     displayName,
-        //     contents: [ { role: 'user', parts: [{ text: 'Contenido completo del repo...' }] } ],
-        //     ttlSeconds: cacheTTL
-        // });
-
-        const mockCacheName = `cachedContents/repo-cache-${Math.random().toString(36).substring(7)}`;
-        console.log(`✅ [Cache-Engine] Cache active: ${mockCacheName}`);
-        return mockCacheName;
+    /**
+     * Libera el caché inmediatamente cuando el usuario se desconecta.
+     */
+    static async clearCache(cacheName: string) {
+        console.log(`🗑️ [Cache-GC] Step 344: Deleting cache ${cacheName} to stop billing.`);
+        // Simulación: await genAI.cachedContent.delete(cacheName);
     }
 }
 

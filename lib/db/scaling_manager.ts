@@ -3,28 +3,36 @@ import { db } from "../../db";
 import { sql } from "drizzle-orm";
 
 /**
- * PASO 287: ESCALADO PREDICTIVO DE BASE DE DATOS
- * Objetivo: Preparar Neon para cargas masivas de trabajo.
+ * PASO 343: INGESTA "BURST" PARA RAG (Neon Postgres)
+ * Objetivo: Acelerar la indexación vectorial escalando verticalmente solo durante el 'hot ingestion'.
  */
-
-export class PredictiveScaling {
-    static async preHeatNeon() {
-        console.log("🔮 [DB-Ops] Predicting high load. Pre-heating Neon resources...");
+export class NeonScalingManager {
+    /**
+     * Prepara Neon para una ingesta masiva de vectores HNSW.
+     */
+    static async enableBurstMode() {
+        console.log("🏎️🗄️ [Neon-Burst] Step 343: Enabling vertical scaling parameters for HNSW indexing...");
 
         try {
-            // Aumentar memoria de mantenimiento para indexación rápida
-            await db.execute(sql`SET maintenance_work_mem = '512MB';`);
-            // Sugerir a Neon que asigne más recursos (vía parámetros de sesión)
-            await db.execute(sql`SET max_parallel_maintenance_workers = 4;`);
-
-            console.log("✅ [Success] Neon optimized for incoming burst ingestion.");
-        } catch (e) {
-            console.error("❌ [Failure] Could not set predictive parameters:", e);
+            await db.execute(sql`SET maintenance_work_mem = '4GB'`);
+            await db.execute(sql`SET max_parallel_maintenance_workers = 4`);
+            console.log("✅ [Neon-Burst] Burst mode active. Neon will scale for indexing tasks.");
+        } catch (error) {
+            console.warn("⚠️ [Neon-Burst] Failed to set session parameters. Proceeding with defaults.", error);
         }
     }
 
-    static async coolDownNeon() {
-        console.log("🧊 [DB-Ops] Resetting Neon to standard operating parameters.");
-        await db.execute(sql`SET maintenance_work_mem = '64MB';`);
+    /**
+     * Restablece los parámetros de Neon tras finalizar la ingesta.
+     */
+    static async resetToNormal() {
+        console.log("🏙️ [Neon-Burst] Resetting session parameters to normal levels...");
+        try {
+            await db.execute(sql`RESET maintenance_work_mem`);
+            await db.execute(sql`RESET max_parallel_maintenance_workers`);
+            console.log("✅ [Neon-Burst] System normalcy restored.");
+        } catch (error) {
+            console.error("❌ [Neon-Burst] Error resetting parameters:", error);
+        }
     }
 }
