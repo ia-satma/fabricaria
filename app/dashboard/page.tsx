@@ -3,6 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Database, Brain, Activity } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+    return {
+        title: "Dashboard | Fabricaria",
+        description: "Panel central de control y métricas del enjambre agéntico.",
+        openGraph: {
+            images: [`/api/og?title=Dashboard`],
+        },
+    };
+}
 
 export default async function DashboardPage() {
     const statsResult = await getDashboardStats();
