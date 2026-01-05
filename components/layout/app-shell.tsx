@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter, SidebarTrigger } from "@/components/ui/sidebar";
 import { User, LayoutDashboard, Terminal, Shield, BarChart3, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -45,8 +45,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             <main className="flex-1 overflow-y-auto relative">
                 <header className="sticky top-0 z-10 p-4 flex justify-between items-center glass border-b border-primary/5">
-                    <div className="text-xs font-mono text-primary/60">
-                        SYSTEM_NOMINAL // SINGULARITY: 100%
+                    <div className="flex items-center gap-4">
+                        <SidebarTrigger className="text-primary" />
+                        <div className="text-xs font-mono text-primary/60">
+                            SYSTEM_NOMINAL // SINGULARITY: 100%
+                        </div>
                     </div>
                     <div className="flex gap-4">
                         {/* Dynamic widgets can go here */}

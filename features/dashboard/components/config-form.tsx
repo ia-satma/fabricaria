@@ -22,7 +22,7 @@ export function ConfigForm({ initialData }: { initialData?: Partial<SystemConfig
             projectName: initialData?.projectName || "Fabricaria Core",
             maxBudget: initialData?.maxBudget || 100,
             aiAgentMode: initialData?.aiAgentMode || "Genesis",
-            maintenanceMode: initialData?.maintenanceMode || false
+            maintenanceMode: initialData?.maintenanceMode ?? false
         }
     });
 

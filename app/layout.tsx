@@ -6,6 +6,9 @@ export const metadata: Metadata = {
     description: "Sistema de gestión Fabricaria",
 };
 
+import { AppShell } from "@/components/layout/app-shell";
+import { SidebarProvider } from "@/components/ui/sidebar";
+
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -13,7 +16,11 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="es">
-            <body className="antialiased">{children}</body>
+            <body className="antialiased font-sans">
+                <SidebarProvider>
+                    <AppShell>{children}</AppShell>
+                </SidebarProvider>
+            </body>
         </html>
     );
 }
