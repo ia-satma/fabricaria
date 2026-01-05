@@ -1,8 +1,6 @@
 run = "pnpm start"
 entrypoint = "index.ts"
 
-[modules]
-nodeBundle = true
 
 [nix]
 channel = "stable-24.05"
