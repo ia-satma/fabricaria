@@ -14,3 +14,7 @@ language = "typescript"
 deploymentTarget = "autoscale"
 run = ["pnpm", "start"]
 build = ["pnpm", "run", "build"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
