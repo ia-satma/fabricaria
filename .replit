@@ -1,40 +1,6 @@
-<<<<<<< HEAD
 modules = ["nodejs-20", "web", "nix"]
 [agent]
 expertMode = true
-=======
-run = "pnpm start"
-entrypoint = "index.ts"
-
->>>>>>> 776d992e52f73f422c4daeeeca610b39c98b6614
 
 [nix]
 channel = "stable-25_05"
-
-[workflows]
-runButton = "Project"
-
-[[workflows.workflow]]
-name = "Project"
-mode = "parallel"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Next.js Dev Server"
-
-[[workflows.workflow]]
-name = "Next.js Dev Server"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
-waitForPort = 5000
-
-[workflows.workflow.metadata]
-outputType = "webview"
-
-[[ports]]
-localPort = 5000
-externalPort = 80
