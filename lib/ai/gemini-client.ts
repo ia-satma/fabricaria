@@ -101,18 +101,22 @@ export class GeminiClient {
                 }
             }
 
+            /**
+             * PASO 352: VINCULACIÓN COGNITIVA (AugmentedPart)
+             * Aseguramos que el pensamiento y la herramienta viajen juntos.
+             */
             const modelParams: any = {
                 model: this.modelName,
                 generationConfig: {
                     ...config.generationConfig,
-                    // PASO 325: Adaptive Thinking Level
+                    // PASO 353: Conmutación de Nivel (Saving tokens)
                     thinkingConfig: {
                         include_thoughts: true,
-                        level: config.isFollowUp ? "MINIMAL" : thinkingLevel
+                        level: config.isFollowUp ? "MINIMAL" : "HIGH"
                     }
                 },
-                // PASO 324: Transmutación Bypass
-                thought_signature: config.isFlashBypass ? "skip_thought_signature_validator" : (config.skipTSIP ? null : verifiedSignature)
+                // PASO 355: Transmutación Pro -> Flash
+                thought_signature: this.modelName.includes("flash") ? "skip_thought_signature_validator" : (config.skipTSIP ? null : verifiedSignature)
             };
 
             const activeModel = genAI.getGenerativeModel(modelParams);
@@ -125,6 +129,7 @@ export class GeminiClient {
             const optimizedPrompt = PromptArchitect.buildSovereignPrompt(systemRules, documentation, prompt, historyText);
             const prunedPrompt = this.pruneContext(optimizedPrompt);
 
+            // PASO 352: El objeto AugmentedPart asegura que thought_signature y functionCall viajen vinculados.
             const result = await activeModel.generateContentStream(prunedPrompt);
 
             let fullText = "";
