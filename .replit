@@ -1,20 +1,6 @@
-run = "pnpm start"
-entrypoint = "index.ts"
-
-[modules]
-nodeBundle = true
+modules = ["nodejs-20", "web", "nix"]
+[agent]
+expertMode = true
 
 [nix]
-channel = "stable-24.05"
-
-[unitTest]
-language = "typescript"
-
-[deployment]
-deploymentTarget = "autoscale"
-run = ["pnpm", "start"]
-build = ["pnpm", "run", "build"]
-
-[[ports]]
-localPort = 5000
-externalPort = 80
+channel = "stable-25_05"
