@@ -6,6 +6,7 @@ import { checkBudget, calculateCost } from "../security/cost-guard";
 import { withSEP1763Interceptor } from "../security/aegis_interceptor";
 import { signThoughtSignature, verifyThoughtSignature } from "../security/thought_signer";
 import { desc, eq } from "drizzle-orm";
+import { PromptArchitect } from "./prompt_architect";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
@@ -109,14 +110,25 @@ export class GeminiClient {
                 model: this.modelName,
                 generationConfig: {
                     ...config.generationConfig,
-                    thinkingConfig: { include_thoughts: true, level: thinkingLevel }
+                    // PASO 325: Adaptive Thinking Level
+                    thinkingConfig: {
+                        include_thoughts: true,
+                        level: config.isFollowUp ? "MINIMAL" : thinkingLevel
+                    }
                 },
-                thought_signature: config.skipTSIP ? null : verifiedSignature
+                // PASO 324: Transmutación Bypass
+                thought_signature: config.isFlashBypass ? "skip_thought_signature_validator" : (config.skipTSIP ? null : verifiedSignature)
             };
 
             const activeModel = genAI.getGenerativeModel(modelParams);
-            // PASO 285: PODA DE TOKENS (Context Pruning)
-            const prunedPrompt = this.pruneContext(prompt);
+
+            // PASO 322: ESTRATEGIA DE PREFIJO COMPARTIDO
+            const documentation = "System Architecture: Golden Stack (Next.js, Neon, Gemini). Rules: Aegis Security, TSIP Continuity.";
+            const systemRules = "1. Security First. 2. Cognitive Economy. 3. Swarm Collaboration.";
+            const historyText = JSON.stringify((this as any).history || []);
+
+            const optimizedPrompt = PromptArchitect.buildSovereignPrompt(systemRules, documentation, prompt, historyText);
+            const prunedPrompt = this.pruneContext(optimizedPrompt);
 
             const result = await activeModel.generateContentStream(prunedPrompt);
 

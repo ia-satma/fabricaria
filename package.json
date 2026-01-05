@@ -53,7 +53,6 @@
         "stripe": "^20.1.0",
         "tailwind-merge": "^2.3.0",
         "tailwindcss-animate": "^1.0.7",
-        "ts-morph": "^27.0.2",
         "ws": "^8.18.3",
         "zod": "^3.25.76"
     },
@@ -76,6 +75,7 @@
         "postcss": "^8",
         "puppeteer": "^22.15.0",
         "tailwindcss": "^3.4.1",
+        "ts-morph": "^27.0.2",
         "ts-node": "^10.9.2",
         "typescript": "^5.9.3"
     }
