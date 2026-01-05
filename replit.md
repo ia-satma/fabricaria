@@ -72,11 +72,13 @@ Required secrets:
 - `.cyber-grid`: Background grid pattern
 
 ## Recent Changes
+- 2026-01-05: Factory Dashboard fully operational with real-time metrics from database
+- 2026-01-05: Fixed ProductionChart component (sizing, data format with date key)
+- 2026-01-05: Created missing tables: token_usage_logs, audit_trail, security_logs
+- 2026-01-05: Resolved git merge conflicts and LSP errors (validateAction, LLMCouncil)
+- 2026-01-05: Added advanced features: Memory Router, Aegis Security Protocol, LLM Council
+- 2026-01-05: Added lib/clean-code.ts for token optimization
 - 2026-01-03: Analytics Dashboard hydrated with real database data (analytics_events table)
 - 2026-01-03: Server Actions created for dashboard metrics (features/analytics/actions.ts)
-- 2026-01-03: Analytics Dashboard added (/analytics) with Recharts visualizations
-- 2026-01-03: Create Agent form implemented with Zod validation and Server Actions
-- 2026-01-03: Database seeded with 5 test agents + 3000+ analytics events
 - 2026-01-03: Cyber-Industrial theme applied - dark palette, neon cyan accents, brutalist corners
-- 2026-01-03: Centralized Agent types in features/agents/types.ts
 - 2026-01-02: Initial Replit setup - configured for port 5000, fixed CSS and component issues

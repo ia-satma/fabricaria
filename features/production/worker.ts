@@ -104,9 +104,9 @@ export async function runProductionWorker() {
 
 
             // AEGIS SECURITY CHECK (Step 20)
-            const { validateAgentAction } = await import("../../lib/security/aegis-interceptor");
+            const { validateAction } = await import("../../lib/security/aegis-interceptor");
             console.log(`🛡️ [Aegis] Validating generated code for Job ${job.jobId}...`);
-            await validateAgentAction("PRODUCTION_CODE_GEN", generatedCode);
+            await validateAction(generatedCode);
             console.log(`✅ [Aegis] Code approved.`);
 
             // SWARM HANDOFF (Step 22)
@@ -138,11 +138,11 @@ export async function runProductionWorker() {
             const isCritical = job.payload && (job.payload as any).isCritical === true;
 
             if (isCritical) {
-                const { conveneCouncil } = await import("../../features/audit/council");
-                const verdict = await conveneCouncil(generatedCode, "Critical modification to production system.");
+                const { LLMCouncil } = await import("../../features/audit/council");
+                const approved = await LLMCouncil.validateAction(generatedCode, "Critical modification to production system.");
 
-                if (!verdict.approved) {
-                    throw new Error(`COUNCIL VETOED CHANGE: ${verdict.feedback}`);
+                if (!approved) {
+                    throw new Error(`COUNCIL VETOED CHANGE: Consensus not reached.`);
                 }
             }
 

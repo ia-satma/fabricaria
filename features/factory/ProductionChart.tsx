@@ -12,7 +12,7 @@ import {
 } from "recharts";
 
 interface ProductionDataPoint {
-    hour: string;
+    date: string;
     output: number;
 }
 
@@ -21,18 +21,33 @@ interface ProductionChartProps {
 }
 
 export function ProductionChart({ data }: ProductionChartProps) {
+    if (!data || data.length === 0) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-lg font-medium">Production Over Time</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                        No production data available
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
     return (
         <Card>
             <CardHeader>
                 <CardTitle className="text-lg font-medium">Production Over Time</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
+                <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height={300}>
                         <LineChart data={data}>
                             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                             <XAxis
-                                dataKey="hour"
+                                dataKey="date"
                                 className="text-xs"
                                 tick={{ fill: 'hsl(var(--muted-foreground))' }}
                             />

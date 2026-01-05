@@ -104,12 +104,14 @@
 
 @layer components {
   .cyber-card {
-    @apply bg-card/80 backdrop-blur-sm border border-primary/20 shadow-[0_0_15px_rgba(0, 240, 255, 0.1)];
+    @apply bg-card/80 backdrop-blur-sm border border-primary/20;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
     transition: all 0.3s ease;
   }
 
   .cyber-card:hover {
-    @apply border-primary/40 shadow-[0_0_25px_rgba(0, 240, 255, 0.2)];
+    @apply border-primary/40;
+    box-shadow: 0 0 25px rgba(0, 240, 255, 0.2);
   }
 
   .neon-text {
@@ -121,7 +123,8 @@
   }
 
   .glass {
-    @apply bg-background/60 backdrop-blur-xl border border-primary/10 shadow-[0_8px_32px_0_rgba(0, 240, 255, 0.07)];
+    @apply bg-background/60 backdrop-blur-xl border border-primary/10;
+    box-shadow: 0 8px 32px 0 rgba(0, 240, 255, 0.07);
   }
 
   .glass-dark {
