@@ -44,16 +44,33 @@ export const agentMemories = pgTable("agent_memories", {
 export const agents = pgTable("agents", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
+    codename: text("codename"), // Unique identifier like NEXUS, ARGOS
     role: text("role"),
+    personality: text("personality"), // Agent personality description
     objective: text("objective"),
+    capabilities: jsonb("capabilities").default([]), // List of capabilities
+    avatar: text("avatar"), // Emoji or icon
     replId: text("repl_id"),
     url: text("url"),
-    status: text("status").default("booting"), // 'booting', 'active', 'failed', 'idle'
+    status: text("status").default("booting"), // 'booting', 'active', 'failed', 'idle', 'thinking'
+    currentTask: text("current_task"), // What the agent is currently doing
     tasksCompleted: integer("tasks_completed").default(0),
     cpuLoad: integer("cpu_load").default(0),
+    lastActivity: timestamp("last_activity").defaultNow(),
     tenantId: uuid("tenant_id").references(() => tenants.id),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const agentMessages = pgTable("agent_messages", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    fromAgentId: uuid("from_agent_id").references(() => agents.id),
+    toAgentId: uuid("to_agent_id").references(() => agents.id),
+    messageType: text("message_type").notNull(), // 'task', 'response', 'alert', 'handoff', 'thinking'
+    content: text("content").notNull(),
+    metadata: jsonb("metadata").default({}),
+    tenantId: uuid("tenant_id").references(() => tenants.id),
+    createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const analyticsEvents = pgTable("analytics_events", {
