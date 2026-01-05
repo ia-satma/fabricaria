@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 modules = ["nodejs-20", "web", "nix"]
 [agent]
 expertMode = true
+=======
+run = "pnpm start"
+entrypoint = "index.ts"
+
+>>>>>>> 776d992e52f73f422c4daeeeca610b39c98b6614
 
 [nix]
 channel = "stable-25_05"

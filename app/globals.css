@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -88,23 +86,30 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-mono tracking-tight;
   }
 
-  code, pre, .font-data {
+  code,
+  pre,
+  .font-data {
     @apply font-mono;
   }
 }
 
 @layer components {
   .cyber-card {
-    @apply bg-card/80 backdrop-blur-sm border border-primary/20 shadow-[0_0_15px_rgba(0,240,255,0.1)];
+    @apply bg-card/80 backdrop-blur-sm border border-primary/20 shadow-[0_0_15px_rgba(0, 240, 255, 0.1)];
     transition: all 0.3s ease;
   }
 
   .cyber-card:hover {
-    @apply border-primary/40 shadow-[0_0_25px_rgba(0,240,255,0.2)];
+    @apply border-primary/40 shadow-[0_0_25px_rgba(0, 240, 255, 0.2)];
   }
 
   .neon-text {
@@ -116,7 +121,7 @@
   }
 
   .glass {
-    @apply bg-background/60 backdrop-blur-xl border border-primary/10 shadow-[0_8px_32px_0_rgba(0,240,255,0.07)];
+    @apply bg-background/60 backdrop-blur-xl border border-primary/10 shadow-[0_8px_32px_0_rgba(0, 240, 255, 0.07)];
   }
 
   .glass-dark {
@@ -128,7 +133,7 @@
   }
 
   .cyber-grid {
-    background-image: 
+    background-image:
       linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
     background-size: 50px 50px;
@@ -147,6 +152,7 @@
   from {
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
   }
+
   to {
     box-shadow: 0 0 20px rgba(0, 240, 255, 0.4), 0 0 30px rgba(0, 240, 255, 0.2);
   }
@@ -156,6 +162,7 @@
   0% {
     transform: translateY(-100%);
   }
+
   100% {
     transform: translateY(100vh);
   }
@@ -167,6 +174,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
