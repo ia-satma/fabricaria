@@ -9,6 +9,7 @@
         "lint": "next lint",
         "db:push": "drizzle-kit push:pg",
         "db:migrate": "psql $DATABASE_URL -f db/migrations/0001_fortress_schema.sql",
+        "prebuild": "npx tsx scripts/validate_envs.ts && npx tsx scripts/cicd_audit.ts && npx tsx scripts/check_barrels.ts && npx tsx scripts/pre_build.ts",
         "run-web": "next start -H 0.0.0.0 -p 5000",
         "run-worker": "npx tsx lib/mcp/stripe-server.ts",
         "test": "npx tsx scripts/test_governance.ts"
